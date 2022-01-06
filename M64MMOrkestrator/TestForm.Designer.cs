@@ -55,11 +55,20 @@ namespace M64MMOrkestrator
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.btnTestBezier = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.nudChangleX = new System.Windows.Forms.NumericUpDown();
+            this.nudChangleY = new System.Windows.Forms.NumericUpDown();
+            this.tbChangeAngleMan = new System.Windows.Forms.CheckBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudCamMode)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudChenji)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDegPerFrame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudEllipsisSize)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudChangleX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudChangleY)).BeginInit();
             this.SuspendLayout();
             // 
             // btnEnsemble
@@ -210,9 +219,9 @@ namespace M64MMOrkestrator
             this.groupBox1.Controls.Add(this.tbChangeFocus);
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.button6);
-            this.groupBox1.Location = new System.Drawing.Point(12, 259);
+            this.groupBox1.Location = new System.Drawing.Point(12, 285);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(494, 229);
+            this.groupBox1.Size = new System.Drawing.Size(494, 203);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "groupBox1";
@@ -253,7 +262,7 @@ namespace M64MMOrkestrator
             // cbTwister
             // 
             this.cbTwister.AutoSize = true;
-            this.cbTwister.Location = new System.Drawing.Point(300, 131);
+            this.cbTwister.Location = new System.Drawing.Point(343, 52);
             this.cbTwister.Name = "cbTwister";
             this.cbTwister.Size = new System.Drawing.Size(85, 17);
             this.cbTwister.TabIndex = 10;
@@ -268,7 +277,7 @@ namespace M64MMOrkestrator
             0,
             0,
             65536});
-            this.nudDegPerFrame.Location = new System.Drawing.Point(300, 188);
+            this.nudDegPerFrame.Location = new System.Drawing.Point(343, 109);
             this.nudDegPerFrame.Maximum = new decimal(new int[] {
             360,
             0,
@@ -291,7 +300,7 @@ namespace M64MMOrkestrator
             0,
             0,
             65536});
-            this.nudEllipsisSize.Location = new System.Drawing.Point(300, 214);
+            this.nudEllipsisSize.Location = new System.Drawing.Point(343, 135);
             this.nudEllipsisSize.Maximum = new decimal(new int[] {
             360,
             0,
@@ -304,7 +313,7 @@ namespace M64MMOrkestrator
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(426, 190);
+            this.label4.Location = new System.Drawing.Point(469, 111);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(76, 13);
             this.label4.TabIndex = 11;
@@ -313,7 +322,7 @@ namespace M64MMOrkestrator
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(426, 217);
+            this.label5.Location = new System.Drawing.Point(469, 138);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(53, 13);
             this.label5.TabIndex = 12;
@@ -322,7 +331,7 @@ namespace M64MMOrkestrator
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(297, 163);
+            this.label6.Location = new System.Drawing.Point(340, 84);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(55, 13);
             this.label6.TabIndex = 11;
@@ -338,16 +347,116 @@ namespace M64MMOrkestrator
             this.btnTestBezier.UseVisualStyleBackColor = true;
             this.btnTestBezier.Click += new System.EventHandler(this.btnTestBezier_Click);
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(409, 12);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(75, 23);
+            this.button7.TabIndex = 13;
+            this.button7.Text = "timeline";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // nudChangleX
+            // 
+            this.nudChangleX.DecimalPlaces = 1;
+            this.nudChangleX.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            this.nudChangleX.Location = new System.Drawing.Point(343, 225);
+            this.nudChangleX.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+            this.nudChangleX.Minimum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            -2147483648});
+            this.nudChangleX.Name = "nudChangleX";
+            this.nudChangleX.Size = new System.Drawing.Size(120, 20);
+            this.nudChangleX.TabIndex = 8;
+            // 
+            // nudChangleY
+            // 
+            this.nudChangleY.DecimalPlaces = 1;
+            this.nudChangleY.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            this.nudChangleY.Location = new System.Drawing.Point(343, 251);
+            this.nudChangleY.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+            this.nudChangleY.Minimum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            -2147483648});
+            this.nudChangleY.Name = "nudChangleY";
+            this.nudChangleY.Size = new System.Drawing.Size(120, 20);
+            this.nudChangleY.TabIndex = 8;
+            // 
+            // tbChangeAngleMan
+            // 
+            this.tbChangeAngleMan.AutoSize = true;
+            this.tbChangeAngleMan.Location = new System.Drawing.Point(343, 168);
+            this.tbChangeAngleMan.Name = "tbChangeAngleMan";
+            this.tbChangeAngleMan.Size = new System.Drawing.Size(108, 17);
+            this.tbChangeAngleMan.TabIndex = 10;
+            this.tbChangeAngleMan.Text = "changle manually";
+            this.tbChangeAngleMan.UseVisualStyleBackColor = true;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(469, 227);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(14, 13);
+            this.label7.TabIndex = 11;
+            this.label7.Text = "X";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(340, 200);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(55, 13);
+            this.label8.TabIndex = 11;
+            this.label8.Text = "angle (+Y)";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(469, 254);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(14, 13);
+            this.label9.TabIndex = 12;
+            this.label9.Text = "Y";
+            // 
             // TestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(546, 500);
+            this.ClientSize = new System.Drawing.Size(717, 500);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.btnTestBezier);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.label5);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.label6);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.label4);
+            this.Controls.Add(this.tbChangeAngleMan);
+            this.Controls.Add(this.nudChangleY);
             this.Controls.Add(this.cbTwister);
+            this.Controls.Add(this.nudChangleX);
             this.Controls.Add(this.nudEllipsisSize);
             this.Controls.Add(this.nudDegPerFrame);
             this.Controls.Add(this.cbAngleMode);
@@ -367,6 +476,8 @@ namespace M64MMOrkestrator
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDegPerFrame)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudEllipsisSize)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudChangleX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudChangleY)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -400,5 +511,12 @@ namespace M64MMOrkestrator
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnTestBezier;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.NumericUpDown nudChangleX;
+        private System.Windows.Forms.NumericUpDown nudChangleY;
+        private System.Windows.Forms.CheckBox tbChangeAngleMan;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
     }
 }

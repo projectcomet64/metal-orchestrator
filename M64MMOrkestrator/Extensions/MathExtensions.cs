@@ -32,6 +32,25 @@ namespace M64MMOrkestrator.Extensions
             return centers[0];
         }
 
+        public static XYAngle BezierInterpolate(XYAngle[] points, float progress)
+        {
+            XYAngle[] centers = new XYAngle[points.Length];
+            Array.Copy(points, centers, points.Length);
+
+            while (centers.Length > 1)
+            {
+                XYAngle[] newCenters = new XYAngle[centers.Length - 1];
+                for (int i = 0; i < centers.Length - 1; i++)
+                {
+                    newCenters[i] = XYAngle.Lerp(centers[i], centers[i + 1], progress);
+                }
+
+                centers = newCenters;
+            }
+
+            return centers[0];
+        }
+
         public static List<PointF> vec3ToPointFs(Vector3[] _in)
         {
             List<PointF> list = new List<PointF>();

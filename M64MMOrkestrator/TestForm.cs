@@ -15,134 +15,48 @@ namespace M64MMOrkestrator
 {
     public partial class TestForm : Form
     {
-        private float _angle;
-
-        public float Angle
-        {
-            get => _angle;
-            set
-            {
-                _angle = value;
-
-                if (value < 0)
-                {
-                    _angle = 360 - value;
-                }
-                if (value > 360)
-                {
-                    _angle = value - 360;
-                }
-            }
-        }
-        public Vector3 MarioPos
-        {
-            get
-            {
-                Vector3 v = new Vector3();
-                byte[] marioposVals = Core.ReadBytes(Core.BaseAddress + 0x33B1AC, 12);
-                v.X = BitConverter.ToSingle(marioposVals, 0);
-                v.Y = BitConverter.ToSingle(marioposVals, 4);
-                v.Z = BitConverter.ToSingle(marioposVals, 8);
-                return v;
-            }
-
-            set
-            {
-                byte[] valsX = BitConverter.GetBytes(value.X);
-                byte[] valsY = BitConverter.GetBytes(value.Y);
-                byte[] valsZ = BitConverter.GetBytes(value.Z);
-                byte[] fullvals = new byte[valsX.Length * 3];
-                valsX.CopyTo(fullvals, 0);
-                valsY.CopyTo(fullvals, 4);
-                valsZ.CopyTo(fullvals, 8);
-                Core.WriteBytes(Core.BaseAddress + 0x33B1AC, fullvals, false);
-            }
-        }
-
-        public Vector3 CamPos
-        {
-            get
-            {
-                Vector3 v = new Vector3();
-                byte[] camposVals = Core.ReadBytes(Core.BaseAddress + 0x3E0004, 12);
-                v.X = BitConverter.ToSingle(camposVals, 0);
-                v.Y = BitConverter.ToSingle(camposVals, 4);
-                v.Z = BitConverter.ToSingle(camposVals, 8);
-                return v;
-            }
-
-            set
-            {
-                byte[] valsX = BitConverter.GetBytes(value.X);
-                byte[] valsY = BitConverter.GetBytes(value.Y);
-                byte[] valsZ = BitConverter.GetBytes(value.Z);
-                byte[] fullvals = new byte[valsX.Length * 3];
-                valsX.CopyTo(fullvals, 0);
-                valsY.CopyTo(fullvals, 4);
-                valsZ.CopyTo(fullvals, 8);
-                Core.WriteBytes(Core.BaseAddress + 0x3E0004, fullvals, false);
-            }
-        }
-
-        public Vector3 CamLookAtPos
-        {
-            get
-            {
-                Vector3 v = new Vector3();
-                byte[] camposVals = Core.ReadBytes(Core.BaseAddress + 0x3E0010, 12);
-                v.X = BitConverter.ToSingle(camposVals, 0);
-                v.Y = BitConverter.ToSingle(camposVals, 4);
-                v.Z = BitConverter.ToSingle(camposVals, 8);
-                return v;
-            }
-
-            set
-            {
-                byte[] valsX = BitConverter.GetBytes(value.X);
-                byte[] valsY = BitConverter.GetBytes(value.Y);
-                byte[] valsZ = BitConverter.GetBytes(value.Z);
-                byte[] fullvals = new byte[valsX.Length * 3];
-                valsX.CopyTo(fullvals, 0);
-                valsY.CopyTo(fullvals, 4);
-                valsZ.CopyTo(fullvals, 8);
-                Core.WriteBytes(Core.BaseAddress + 0x3E0010, fullvals, false);
-            }
-        }
 
         public void UpdateVals()
         {
-            Vector3 pos = MarioPos;
-            Vector3 camPos = CamPos;
-            Vector3 lookAtCamPos = CamLookAtPos;
+            Vector3 pos = KIOBase.MarioPos;
+            Vector3 camPos = KIOBase.CamPos;
+            Vector3 lookAtCamPos = KIOBase.CamLookAtPos;
+            XYAngle camXyAngle = KIOBase.CamAngle;
             lbMarioInfo.Text = $"Mario Pos Info:\nX: {pos.X}\nY: {pos.Y}\nZ: {pos.Z}";
-            lbCamInfo.Text = $"Hacked Cam Pos Info:\nX: {camPos.X}\nY: {camPos.Y}\nZ: {camPos.Z}\nHacked Cam Pos LookAt Info:\nX: {lookAtCamPos.X}\nY: {lookAtCamPos.Y}\nZ: {lookAtCamPos.Z}";
+            lbCamInfo.Text = $"Hacked Cam Pos Info:\nX: {camPos.X}\nY: {camPos.Y}\nZ: {camPos.Z}\nHacked Cam Pos LookAt Info:\nX: {lookAtCamPos.X} // DEG: {camXyAngle.X}\nY: {lookAtCamPos.Y} // DEG: {camXyAngle.Y}\nZ: {lookAtCamPos.Z}";
 
             if (cbFocusMario.Checked)
             {
                 // Remember to make XCamPos a Vector3 too so you don't have to make so many calls
-                CamPos = pos;
+                KIOBase.CamPos = pos;
             }
 
             if (cbLookAtMario.Checked)
             {
                 // Remember to make XCamPos a Vector3 too so you don't have to make so many calls
-                CamLookAtPos = pos;
+                KIOBase.CamLookAtPos = pos;
             }
 
             if (cbAngleMode.Checked)
             {
                 pos.Z += 280;
                 pos.Y += 240;
-                CamLookAtPos = pos;
+                KIOBase.CamLookAtPos = pos;
                 pos.Z += 70;
                 pos.Y += 30;
-                CamPos = pos;
+                KIOBase.CamPos = pos;
+            }
+
+            if (tbChangeAngleMan.Checked)
+            {
+                KIOBase.CamAngle = new XYAngle((float)nudChangleX.Value, (float)nudChangleY.Value);
+                //KIOBase.CamLookAtPos = KIOBase.CamAngle.LookAtFromPosition(pos);
             }
 
             if (cbTwister.Checked)
             {
-                Angle += (float)nudDegPerFrame.Value;
-                CamLookAtPos = MakeAngleFromPos(camPos, Angle, (float)nudEllipsisSize.Value);
+                KIOBase.CamAngle = KIOBase.CamAngle + new XYAngle((float)nudDegPerFrame.Value, 0);
+                //KIOBase.CamLookAtPos = KIOBase.CamAngle.LookAtFromPosition(pos);
             }
         }
 
@@ -156,7 +70,7 @@ namespace M64MMOrkestrator
             Core.WriteBytes(Core.BaseAddress + 0x245000 + 0x6316c, Resources._6316c, true);
             Core.WriteBytes(Core.BaseAddress + 0x245000 + 0x31440, Resources._31440, true);
             Core.WriteBytes(Core.BaseAddress + 0x245000 + 0x42ce0, Resources._42ce0, true);
-
+            KIOBase.Init();
 
         }
 
@@ -199,6 +113,11 @@ namespace M64MMOrkestrator
         {
             frmBezierM fb = new frmBezierM();
             fb.ShowDialog();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            KIOBase.tb?.Show();
         }
     }
 

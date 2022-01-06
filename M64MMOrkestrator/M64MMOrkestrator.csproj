@@ -55,6 +55,17 @@
     <Compile Include="Classes\Marker.cs" />
     <Compile Include="Classes\Region.cs" />
     <Compile Include="Classes\Timeline.cs" />
+    <Compile Include="Classes\UncommittedChange.cs" />
+    <Compile Include="Classes\XYAngle.cs" />
+    <Compile Include="Controls\DoubleBufferedPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TimelineRenderer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TimelineRenderer.Designer.cs">
+      <DependentUpon>TimelineRenderer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Extensions\MathExtensions.cs" />
     <Compile Include="frmAnarchy.cs">
       <SubType>Form</SubType>
@@ -68,6 +79,12 @@
     </Compile>
     <Compile Include="frmBezierM.Designer.cs">
       <DependentUpon>frmBezierM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmTimelineB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTimelineB.Designer.cs">
+      <DependentUpon>frmTimelineB.cs</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IKeyframe.cs" />
     <Compile Include="Module.cs" />
@@ -95,11 +112,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\TimelineRenderer.resx">
+      <DependentUpon>TimelineRenderer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmAnarchy.resx">
       <DependentUpon>frmAnarchy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmBezierM.resx">
       <DependentUpon>frmBezierM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTimelineB.resx">
+      <DependentUpon>frmTimelineB.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -119,10 +142,61 @@
     <None Include="Resources\defaultAddonIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controls\" />
+    <None Include="Resources\MACBG.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\spamton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MACBG1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MACBG2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fLinear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fSub.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fBezier.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fHold.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fSmooth.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fSharp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fSlow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fFast.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fShake.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\fSelected.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\selectKeyframes.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\nudgeKfLeft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\nudgeKfRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\deleteKf.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\addKf.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

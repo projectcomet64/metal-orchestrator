@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,6 +16,15 @@ namespace M64MMOrkestrator.KIO
     {
 
         public string Name { get; set; }
+
+        public virtual List<Keyframe> OrderedGenericList { get; set; }
+
+        /// <summary>
+        /// Returns the keyframe found at the specified frame. Null if there's none.
+        /// </summary>
+        /// <param name="frame">Frame to get the keyframe from</param>
+        /// <returns></returns>
+        public abstract Keyframe GetKeyframeAtPosition(int frame);
 
 
         internal uint _currentFrame;
@@ -54,6 +64,10 @@ namespace M64MMOrkestrator.KIO
         /// </summary>
         public event CurrentFrameChanged OnCurrentFrameChanged;
 
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     /// <summary>
@@ -67,14 +81,15 @@ namespace M64MMOrkestrator.KIO
 
         protected Keyframe<TKeyframe> basicKeyframe;
 
-        public Keyframe<TKeyframe>[] OrderedKeyframes => elements.OrderBy(k => k.CurrentValue).ToArray();
+        public List<Keyframe<TKeyframe>> OrderedKeyframes => elements.OrderBy(k => k.Position).ToList();
+
+        public override List<Keyframe> OrderedGenericList { get => OrderedKeyframes.Cast<Keyframe>().ToList(); }
 
         public Keyframe<TKeyframe> closestBehindKeyframe;
         public Keyframe<TKeyframe> closestFrontKeyframe;
 
 
-        protected delegate TKeyframe ValueGetterDelegate();
-        protected ValueGetterDelegate valueGetter;
+        protected Func<TKeyframe> valueGetter;
 
         protected KeyframeRack()
         {
@@ -90,12 +105,12 @@ namespace M64MMOrkestrator.KIO
         {
             elements.Add(initialKeyframe);
             basicKeyframe = initialKeyframe;
-            valueGetter = new ValueGetterDelegate(valgetter);
+            valueGetter = valgetter;
         }
 
         public KeyframeRack(Func<TKeyframe> valgetter) : this()
         {
-            valueGetter = new ValueGetterDelegate(valgetter);
+            valueGetter = valgetter;
             AddCurrentStateAtPosition(0);
         }
 
@@ -105,15 +120,27 @@ namespace M64MMOrkestrator.KIO
         }
 
         /// <summary>
+        /// Returns the keyframe found at the specified frame. Null if there's none.
+        /// </summary>
+        /// <param name="frame">Frame to get the keyframe from</param>
+        /// <returns></returns>
+        public override Keyframe GetKeyframeAtPosition(int frame)
+        {
+            if (frame < 0) return null;
+
+            return elements.FirstOrDefault(x => x.Position == frame);
+        }
+
+        /// <summary>
         /// Reanalyzes the keyframes in front and behind the current trackhead.
         /// </summary>
         public void ReassessClosestFrames()
         {
-            Keyframe<TKeyframe>[] oKeyframes = OrderedKeyframes;
+            List<Keyframe<TKeyframe>> oKeyframes = OrderedKeyframes;
             closestBehindKeyframe = oKeyframes.Where(k => k.Position <= ReferenceFrame && k.SubordinateOf == null)
-                .OrderByDescending(k => k.CurrentValue).FirstOrDefault();
+                .OrderByDescending(k => k.Position).FirstOrDefault();
             closestFrontKeyframe = oKeyframes.Where(k => k.Position > ReferenceFrame && k.SubordinateOf == null)
-                .OrderBy(k => k.CurrentValue).FirstOrDefault();
+                .OrderBy(k => k.Position).FirstOrDefault();
         }
 
         /// <summary>
@@ -134,35 +161,32 @@ namespace M64MMOrkestrator.KIO
         public virtual TKeyframe CalculateInterpolation(bool reassess = true)
         {
             if (reassess) ReassessClosestFrames();
+            if (closestBehindKeyframe == null) return closestFrontKeyframe.CurrentValue;
             if (closestFrontKeyframe == null) return closestBehindKeyframe.CurrentValue;
 
             switch (closestBehindKeyframe.InterpolationType)
             {
                 case KeyframeType.Bezier:
-                {
-                    return NBezier(closestBehindKeyframe.Subordinates,
-                        TrackHeadDistanceToKeyframe(closestBehindKeyframe) /
-                        closestBehindKeyframe.Distance(closestFrontKeyframe));
-                        break;
-                }
+                    {
+                        return NBezier(closestBehindKeyframe.Subordinates,
+                            (float)TrackHeadDistanceToKeyframe(closestBehindKeyframe) /
+                            closestBehindKeyframe.Distance(closestFrontKeyframe));
+                    }
                 case KeyframeType.Linear:
                 default:
-                {
-                    return Lerp(closestBehindKeyframe, closestFrontKeyframe,
-                        TrackHeadDistanceToKeyframe(closestBehindKeyframe) /
-                        closestBehindKeyframe.Distance(closestFrontKeyframe));
-                    break;
+                    {
+                        return Lerp(closestBehindKeyframe, closestFrontKeyframe,
+                            (float)TrackHeadDistanceToKeyframe(closestBehindKeyframe) /
+                            closestBehindKeyframe.Distance(closestFrontKeyframe));
                     }
                 case KeyframeType.Hold:
-                {
-                    return closestBehindKeyframe.CurrentValue;
-                        break;
-                }
+                    {
+                        return closestBehindKeyframe.CurrentValue;
+                    }
                 case KeyframeType.Shake:
-                {
-                    return NShake(closestBehindKeyframe.Subordinates);
-                    break;
-                }
+                    {
+                        return NShake(closestBehindKeyframe.Subordinates);
+                    }
 
             }
 
@@ -194,17 +218,20 @@ namespace M64MMOrkestrator.KIO
         /// <returns></returns>
         public abstract TKeyframe NShake(Keyframe<TKeyframe>[] points);
 
-        bool IsPositionBetweenTwoKeyframes(uint position, Keyframe<TKeyframe> start, Keyframe<TKeyframe> end) =>
-            (position < end.Position && position > start.Position);
+        bool IsPositionBetweenTwoKeyframes(uint position, Keyframe<TKeyframe> start, Keyframe<TKeyframe> end)
+        {
+            if (start == null || end == null) return false;
+            return (position < end.Position && position > start.Position);
+        }
+
 
         public override void AddCurrentStateAtPosition(uint framepos)
         {
             TKeyframe currentVal = valueGetter();
             ReassessClosestFrames();
-            if (!IsPositionBetweenTwoKeyframes(CurrentFrame, closestBehindKeyframe, closestFrontKeyframe))
+            if (!IsPositionBetweenTwoKeyframes(CurrentFrame, closestBehindKeyframe, closestFrontKeyframe) && closestBehindKeyframe.Position == CurrentFrame)
             {
-                Keyframe<TKeyframe> found = this.First(x => x.Position == CurrentFrame);
-                found.CurrentValue = currentVal;
+                closestBehindKeyframe.CurrentValue = currentVal;
                 return;
             }
             Keyframe<TKeyframe> _keyframe = new Keyframe<TKeyframe>(currentVal)
@@ -224,10 +251,7 @@ namespace M64MMOrkestrator.KIO
         public void Add(Keyframe<TKeyframe> item)
         {
             elements.Add(item);
-            if (IsPositionBetweenTwoKeyframes(item.Position, closestBehindKeyframe, closestFrontKeyframe))
-            {
-                ReassessClosestFrames();
-            }
+            ReassessClosestFrames();
         }
 
         public void Clear()
@@ -238,7 +262,7 @@ namespace M64MMOrkestrator.KIO
 
         public bool Remove(Keyframe<TKeyframe> item)
         {
-            if (elements.Count == 0) return false;
+            if (elements.Count < 2) return false;
             bool worked = elements.Remove(item);
             if (!worked) return false;
 
@@ -273,6 +297,7 @@ namespace M64MMOrkestrator.KIO
 
         public void RemoveAt(int index)
         {
+            if (elements.Count < 2) return;
             elements.RemoveAt(index);
             if (closestBehindKeyframe == null || closestFrontKeyframe == null)
             {
@@ -301,6 +326,10 @@ namespace M64MMOrkestrator.KIO
     public class Vector3KeyframeRack : KeyframeRack<Vector3>
     {
 
+        public Vector3KeyframeRack(Keyframe<Vector3> initialKeyframe, Func<Vector3> valgetter) : base(initialKeyframe, valgetter) { }
+
+        public Vector3KeyframeRack(Func<Vector3> valgetter) : base(valgetter) { }
+
         public override Vector3 Lerp(Keyframe<Vector3> start, Keyframe<Vector3> end, float position)
         {
             return Vector3.Lerp(start.CurrentValue, end.CurrentValue, position);
@@ -318,6 +347,30 @@ namespace M64MMOrkestrator.KIO
         }
     }
 
-    
-    
+    public class XYAngleKeyframeRack : KeyframeRack<XYAngle>
+    {
+
+        public XYAngleKeyframeRack(Keyframe<XYAngle> initialKeyframe, Func<XYAngle> valgetter) : base(initialKeyframe, valgetter) { }
+
+        public XYAngleKeyframeRack(Func<XYAngle> valgetter) : base(valgetter) { }
+
+        public override XYAngle Lerp(Keyframe<XYAngle> start, Keyframe<XYAngle> end, float position)
+        {
+            return XYAngle.Lerp(start.CurrentValue, end.CurrentValue, position);
+        }
+
+        public override XYAngle NBezier(Keyframe<XYAngle>[] points, float position)
+        {
+            return MathExtensions.BezierInterpolate(points.Select(x => x.CurrentValue).ToArray(), position);
+        }
+
+        public override XYAngle NShake(Keyframe<XYAngle>[] points)
+        {
+            // TODO: Implement shaking
+            return points[0].CurrentValue;
+        }
+    }
+
+
+
 }

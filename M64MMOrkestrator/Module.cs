@@ -41,6 +41,7 @@ namespace M64MMOrkestrator
 
         public void Initialize()
         {
+            
             if (tf == null)
             {
                 tf = new TestForm();
@@ -71,9 +72,27 @@ namespace M64MMOrkestrator
         public void Update()
         {
             if (!tf.IsHandleCreated) return;
-            tf?.Invoke(new MethodInvoker(delegate ()
+            tf?.Invoke(new MethodInvoker(() =>
             {
                 tf?.UpdateVals();
+
+                if (KIOBase.Ready)
+                {
+                    if (!KIOBase.tb.IsHandleCreated) return;
+                    KIOBase.tb?.Invoke(new MethodInvoker(() =>
+                        {
+                            KIOBase.tb.UpdateAllLabels();
+                            if (KIOBase.mainTL.Playing)
+                            {
+                                KIOBase.mainTL.TrackheadPosition++;
+                                if (KIOBase.mainTL.TrackheadPosition >= KIOBase.mainTL.Length)
+                                {
+                                    KIOBase.mainTL.Playing = false;
+                                }
+                            }
+                        }
+                         ));
+                }
             }));
 
         }

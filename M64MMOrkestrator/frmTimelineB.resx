@@ -117,68 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="_31440" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\31440;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="_6316c" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\6316c;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="spamton" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\spamton.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="_42ce0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\42ce0;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="defaultAddonIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\defaultAddonIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="MACBG" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\MACBG2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="addKf" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\addKf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="deleteKf" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\deleteKf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="fBezier" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\fBezier.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="fFast" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\fFast.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="fHold" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\fHold.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="fLinear" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\fLinear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="fSelected" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\fSelected.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="fShake" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\fShake.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="fSharp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\fSharp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="fSlow" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\fSlow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="fSmooth" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\fSmooth.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="fSub" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\fSub.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="nudgeKfLeft" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\nudgeKfLeft.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="nudgeKfRight" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\nudgeKfRight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="selectKeyframes" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\selectKeyframes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btnSync.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wwAADsMBx2+oZAAAAG1JREFUOE+9zAEKwCAMA0D//2ln12Yk3awDxw4CWhvbH3qRV/oTm/vzWlSUzf1Z
+        4SEvRM3Z3ceKixwoy+ZWiLBp2Wx9gOVZgM8iF3KAz+JaBp6NAJ+FFLY+AJ6NAJ/FuZhhbguh/qCIyfcv
+        tHYAPGC2Skh5TOIAAAAASUVORK5CYII=
+</value>
   </data>
 </root>
