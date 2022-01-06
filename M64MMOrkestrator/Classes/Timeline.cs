@@ -6,14 +6,20 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using M64MMOrkestrator.Classes;
 
 namespace M64MMOrkestrator.KIO
 {
     public class Timeline
     {
+        // TODO: Make this one private and expose a readonlydictionary instead
         public Dictionary<string, KeyframeRack> KeyframeRacks { get; } = new Dictionary<string, KeyframeRack>();
 
-        private uint _trackHead;
+        public Dictionary<string, UncommittedRackChange> UncommittedRackChanges { get; } =
+            new Dictionary<string, UncommittedRackChange>();
+
+        private int _trackHead;
 
         public bool Synchronize { get; set; } = true;
 
@@ -22,6 +28,17 @@ namespace M64MMOrkestrator.KIO
         public bool Loop { get; set; }
 
         public int Length { get; set; }
+
+        public string TimecodeString(int frames = 30)
+        {
+            int frm, second, minute, hour;
+            frm = TrackheadPosition % frames;
+            second = (int)Math.Floor((double)TrackheadPosition / frames);
+            minute = (int)Math.Floor((double)second / 60);
+            hour = (int)Math.Floor((double)minute / 60);
+            return $"{hour:D2}:{minute:D2}:{second:D2}.{frm:D2}";
+
+        }
 
         public Region LoopRegion { get; set; }
 
@@ -42,23 +59,77 @@ namespace M64MMOrkestrator.KIO
 
         public event KeyframeRackChanged OnKeyframeRackChanged;
 
+        public delegate void TrackheadChanged(int position);
+
+        public event TrackheadChanged OnTrackheadChanged;
+
         public List<string> SelectedRacks { get; set; } = new List<string>();
         public string ActiveRack { get; set; }
 
         public List<Keyframe> SelectedKeyframes { get; set; } = new List<Keyframe>();
 
-        public uint TrackheadPosition
+        public int TrackheadPosition
         {
             get => _trackHead;
             set
             {
                 _trackHead = value;
+                OnTrackheadChanged?.Invoke(value);
                 foreach (KeyframeRack kRack in KeyframeRacks.Values)
                 {
                     if (Synchronize) kRack.CurrentFrame = value;
                     else kRack.ReferenceFrame = value;
                 }
             }
+        }
+
+        /// <summary>
+        /// "Staging" refers to marking keyframes as uncommitted and allowing delta changes to the specific rack, uncommitted.
+        /// </summary>
+        public void StageSelectedKeyframes()
+        {
+            foreach (KeyValuePair<string, UncommittedRackChange> uChange in UncommittedRackChanges)
+            {
+                if (uChange.Value != null) return; // staging area must be clean otherwise no
+            }
+
+            foreach (KeyValuePair<string, KeyframeRack> kRack in KeyframeRacks)
+            {
+                Keyframe[] selected = kRack.Value.OrderedGenericList.Where(x => SelectedKeyframes.Contains(x)).ToArray();
+                if (selected.Length == 0) continue;
+                UncommittedRackChange changes = new UncommittedRackChange(selected);
+                UncommittedRackChanges[kRack.Key] = changes;
+            }
+        }
+
+        public void MoveAllDeltas(bool forward)
+        {
+            bool canMove = UncommittedRackChanges.Where(x => x.Value != null).All(x => x.Value?.CanMoveBackwards == true);
+            if (!canMove) return;
+            foreach (KeyValuePair<string, UncommittedRackChange> uChange in UncommittedRackChanges)
+            {
+                if (UncommittedRackChanges[uChange.Key] == null) continue;
+
+                UncommittedRackChanges[uChange.Key].Delta += (forward ? 1 : -1);
+            }
+        }
+
+        public void CommitAllChanges()
+        {
+            KeyValuePair<string, UncommittedRackChange>[] ucArray = UncommittedRackChanges.Cast<KeyValuePair<string, UncommittedRackChange>>().ToArray();
+            for (int i = 0; i < ucArray.Length; i++)
+            {
+                if (UncommittedRackChanges[ucArray[i].Key] == null) continue;
+
+                KeyframeRacks[ucArray[i].Key].Commit(ucArray[i].Value);
+                UncommittedRackChanges[ucArray[i].Key] = null;
+            }
+        }
+
+        public void AddRack(string id, KeyframeRack rack)
+        {
+            KeyframeRacks.Add(id, rack);
+            UncommittedRackChanges.Add(id, null);
         }
 
         public void AddValueToRack(string rack)

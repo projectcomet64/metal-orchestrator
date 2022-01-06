@@ -55,7 +55,7 @@
     <Compile Include="Classes\Marker.cs" />
     <Compile Include="Classes\Region.cs" />
     <Compile Include="Classes\Timeline.cs" />
-    <Compile Include="Classes\UncommittedChange.cs" />
+    <Compile Include="Classes\UncommittedRackChange.cs" />
     <Compile Include="Classes\XYAngle.cs" />
     <Compile Include="Controls\DoubleBufferedPanel.cs">
       <SubType>Component</SubType>
@@ -197,6 +197,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\addKf.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\moveKeyframes.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

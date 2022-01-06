@@ -33,15 +33,15 @@ namespace M64MMOrkestrator.Controls
             this.scControls = new System.Windows.Forms.SplitContainer();
             this.scTimelineSplit = new System.Windows.Forms.SplitContainer();
             this.scRackTitles = new System.Windows.Forms.SplitContainer();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lbTimecode = new System.Windows.Forms.Label();
             this.lbRackTitles = new System.Windows.Forms.ListBox();
             this.pnlRacks = new System.Windows.Forms.Panel();
+            this.tbZoom = new System.Windows.Forms.TrackBar();
             this.btnNudgeR = new System.Windows.Forms.Button();
             this.btnNudgeL = new System.Windows.Forms.Button();
             this.btnSelectKf = new System.Windows.Forms.Button();
             this.btnRemoveKf = new System.Windows.Forms.Button();
             this.btnAddKf = new System.Windows.Forms.Button();
-            this.tbZoom = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.scControls)).BeginInit();
             this.scControls.Panel1.SuspendLayout();
             this.scControls.Panel2.SuspendLayout();
@@ -105,6 +105,7 @@ namespace M64MMOrkestrator.Controls
             this.scTimelineSplit.Panel2.AutoScroll = true;
             this.scTimelineSplit.Panel2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("scTimelineSplit.Panel2.BackgroundImage")));
             this.scTimelineSplit.Panel2.Controls.Add(this.pnlRacks);
+            this.scTimelineSplit.Panel2.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scTimelineSplit_Panel2_Scroll);
             this.scTimelineSplit.Panel2MinSize = 220;
             this.scTimelineSplit.Size = new System.Drawing.Size(971, 484);
             this.scTimelineSplit.SplitterDistance = 200;
@@ -124,7 +125,7 @@ namespace M64MMOrkestrator.Controls
             // scRackTitles.Panel1
             // 
             this.scRackTitles.Panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.scRackTitles.Panel1.Controls.Add(this.label1);
+            this.scRackTitles.Panel1.Controls.Add(this.lbTimecode);
             this.scRackTitles.Panel1MinSize = 31;
             // 
             // scRackTitles.Panel2
@@ -136,14 +137,16 @@ namespace M64MMOrkestrator.Controls
             this.scRackTitles.SplitterWidth = 1;
             this.scRackTitles.TabIndex = 1;
             // 
-            // label1
+            // lbTimecode
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 10);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(168, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "I am 32 px tall including the splitter";
+            this.lbTimecode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbTimecode.Font = new System.Drawing.Font("Lucida Console", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbTimecode.Location = new System.Drawing.Point(0, 0);
+            this.lbTimecode.Name = "lbTimecode";
+            this.lbTimecode.Size = new System.Drawing.Size(198, 31);
+            this.lbTimecode.TabIndex = 0;
+            this.lbTimecode.Text = "00:00:00.00";
+            this.lbTimecode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lbRackTitles
             // 
@@ -152,13 +155,10 @@ namespace M64MMOrkestrator.Controls
             this.lbRackTitles.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.lbRackTitles.FormattingEnabled = true;
             this.lbRackTitles.ItemHeight = 24;
-            this.lbRackTitles.Items.AddRange(new object[] {
-            "ZI",
-            "O"});
             this.lbRackTitles.Location = new System.Drawing.Point(0, 0);
             this.lbRackTitles.Margin = new System.Windows.Forms.Padding(0);
             this.lbRackTitles.Name = "lbRackTitles";
-            this.lbRackTitles.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.lbRackTitles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lbRackTitles.Size = new System.Drawing.Size(198, 216);
             this.lbRackTitles.TabIndex = 1;
             this.lbRackTitles.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lbRackTitles_DrawItem);
@@ -174,6 +174,17 @@ namespace M64MMOrkestrator.Controls
             this.pnlRacks.TabIndex = 0;
             this.pnlRacks.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlRacks_Paint);
             // 
+            // tbZoom
+            // 
+            this.tbZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbZoom.AutoSize = false;
+            this.tbZoom.Location = new System.Drawing.Point(808, 17);
+            this.tbZoom.Name = "tbZoom";
+            this.tbZoom.Size = new System.Drawing.Size(160, 24);
+            this.tbZoom.TabIndex = 0;
+            this.tbZoom.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.tbZoom.Scroll += new System.EventHandler(this.tbZoom_Scroll);
+            // 
             // btnNudgeR
             // 
             this.btnNudgeR.Image = global::M64MMOrkestrator.Properties.Resources.nudgeKfRight;
@@ -183,6 +194,7 @@ namespace M64MMOrkestrator.Controls
             this.btnNudgeR.TabIndex = 5;
             this.btnNudgeR.Text = " ";
             this.btnNudgeR.UseVisualStyleBackColor = true;
+            this.btnNudgeR.Click += new System.EventHandler(this.btnNudgeR_Click);
             // 
             // btnNudgeL
             // 
@@ -193,6 +205,7 @@ namespace M64MMOrkestrator.Controls
             this.btnNudgeL.TabIndex = 4;
             this.btnNudgeL.Text = " ";
             this.btnNudgeL.UseVisualStyleBackColor = true;
+            this.btnNudgeL.Click += new System.EventHandler(this.btnNudgeL_Click);
             // 
             // btnSelectKf
             // 
@@ -228,17 +241,6 @@ namespace M64MMOrkestrator.Controls
             this.btnAddKf.UseVisualStyleBackColor = true;
             this.btnAddKf.Click += new System.EventHandler(this.btnAddKf_Click);
             // 
-            // tbZoom
-            // 
-            this.tbZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbZoom.AutoSize = false;
-            this.tbZoom.Location = new System.Drawing.Point(808, 17);
-            this.tbZoom.Name = "tbZoom";
-            this.tbZoom.Size = new System.Drawing.Size(160, 24);
-            this.tbZoom.TabIndex = 0;
-            this.tbZoom.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.tbZoom.Scroll += new System.EventHandler(this.tbZoom_Scroll);
-            // 
             // TimelineRenderer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -257,7 +259,6 @@ namespace M64MMOrkestrator.Controls
             ((System.ComponentModel.ISupportInitialize)(this.scTimelineSplit)).EndInit();
             this.scTimelineSplit.ResumeLayout(false);
             this.scRackTitles.Panel1.ResumeLayout(false);
-            this.scRackTitles.Panel1.PerformLayout();
             this.scRackTitles.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.scRackTitles)).EndInit();
             this.scRackTitles.ResumeLayout(false);
@@ -271,7 +272,7 @@ namespace M64MMOrkestrator.Controls
         private System.Windows.Forms.SplitContainer scControls;
         private System.Windows.Forms.SplitContainer scTimelineSplit;
         private System.Windows.Forms.SplitContainer scRackTitles;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lbTimecode;
         private System.Windows.Forms.ListBox lbRackTitles;
         private System.Windows.Forms.TrackBar tbZoom;
         private System.Windows.Forms.Panel pnlRacks;

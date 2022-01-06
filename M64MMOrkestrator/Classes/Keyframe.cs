@@ -14,7 +14,7 @@ namespace M64MMOrkestrator.KIO
 {
     public abstract class Keyframe
     {
-        public uint Position { get; set; }
+        public int Position { get; set; }
 
         public KeyframeType InterpolationType { get; set; }
 

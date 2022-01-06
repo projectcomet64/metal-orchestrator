@@ -233,6 +233,16 @@ namespace M64MMOrkestrator.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap moveKeyframes {
+            get {
+                object obj = ResourceManager.GetObject("moveKeyframes", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap nudgeKfLeft {
             get {
                 object obj = ResourceManager.GetObject("nudgeKfLeft", resourceCulture);

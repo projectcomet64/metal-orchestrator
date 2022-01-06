@@ -120,8 +120,8 @@ namespace M64MMOrkestrator
         public static void Init()
         {
             mainTL = new Timeline();
-            mainTL.KeyframeRacks.Add("campos", camPosKeyframeRack);
-            mainTL.KeyframeRacks.Add("camrot", angleKeyframeRack);
+            mainTL.AddRack("campos", camPosKeyframeRack);
+            mainTL.AddRack("camrot", angleKeyframeRack);
             camPosKeyframeRack.OnCurrentFrameChanged += () => { CamPos = camPosKeyframeRack.CalculateInterpolation(); };
             angleKeyframeRack.OnCurrentFrameChanged += () => { CamAngle = angleKeyframeRack.CalculateInterpolation(); };
 

@@ -19,8 +19,10 @@ namespace M64MMOrkestrator.Controls
         private Brush headerBrush = new SolidBrush(Color.DarkGray);
         private Brush trackevenBrush = new SolidBrush(Color.FromArgb(0x717171));
         private Brush trackoddBrush = new SolidBrush(Color.FromArgb(0x5b5b5b));
+        private Brush trackHeadBrush = new SolidBrush(Color.FromArgb(255, 53, 104, 216));
+        private Pen trackHeadPen = new Pen(Color.FromArgb(255, 13, 68, 191));
+        private Pen trackBodyPen = new Pen(Color.FromArgb(255, 52, 112, 246));
         private Pen frameCountPen = new Pen(Color.LightGray, 1);
-
         private BindingSource _tlBs = new BindingSource();
 
         private int frameSizeInPixels;
@@ -42,21 +44,35 @@ namespace M64MMOrkestrator.Controls
             _tl = tl;
             _tlBs.DataSource = _tl.KeyframeRacks;
             InitializeComponent();
-            tbZoom.Maximum = pnlRacks.Width / 3;
-            tbZoom.Value = tbZoom.Maximum;
-            tbZoom.Minimum = Math.Min(_tl.Length / pnlRacks.Width, 1);
-            
-            frameSizeInPixels = tbZoom.Value;
-            pnlRacks.Width = _tl.Length * frameSizeInPixels;
-            pnlRacks.Height = scRackTitles.Panel1.Height + lbRackTitles.Height;
             lbRackTitles.DataSource = _tlBs;
             lbRackTitles.DisplayMember = "Value";
             lbRackTitles.ValueMember = "Key";
+
+            tbZoom.Maximum = pnlRacks.Width / 3;
+            tbZoom.Value = tbZoom.Maximum;
+            tbZoom.Minimum = Math.Min(_tl.Length / pnlRacks.Width, 1);
+
+            frameSizeInPixels = tbZoom.Value;
+            pnlRacks.Width = _tl.Length * frameSizeInPixels;
+            lbRackTitles.Height = lbRackTitles.ItemHeight * lbRackTitles.Items.Count;
+            pnlRacks.Height = scRackTitles.Panel1.Height + lbRackTitles.Height + 4;
+            
+            scRackTitles.Panel2.AutoScrollPosition = new Point(0, 0);
+            scRackTitles.Panel2.VerticalScroll.Maximum = 999;
+            _tl.OnTrackheadChanged += (time) => Redraw();
+            trackHeadPen.Width = 2;
+            trackBodyPen.Width = 2;
+            Redraw();
+        }
+
+        public void Redraw()
+        {
+            lbTimecode.Text = _tl.TimecodeString();
+            pnlRacks.Refresh();
         }
 
         private void pnlRacks_Paint(object sender, PaintEventArgs e)
         {
-            
             using (Graphics g = e.Graphics)
             {
                 // Clear background of panel
@@ -71,12 +87,12 @@ namespace M64MMOrkestrator.Controls
 
                 // Flatten the keyframe racks to an array
                 // TODO: Potentially give the user a way to organize the racks however they want
-                KeyframeRack[] krArray = _tl.KeyframeRacks.Values.ToArray();
+                KeyValuePair<string, KeyframeRack>[] krArray = _tl.KeyframeRacks.Cast<KeyValuePair<string, KeyframeRack>>().ToArray();
 
                 // Draw the racks with alternating colors
                 for (int i = 0; i < krArray.Count(); i++)
                 {
-                    g.FillRectangle((i % 2 == 0 ? new SolidBrush(Color.FromArgb(97,97,97)) : new SolidBrush(Color.FromArgb(50,50,50))), new Rectangle(0, 0 + 33 + (i * 24), pnlRacks.Width, 24));
+                    g.FillRectangle((i % 2 == 0 ? new SolidBrush(Color.FromArgb(97,97,97)) : new SolidBrush(Color.FromArgb(50,50,50))), new Rectangle(0, 0 + 35 + (i * 24), pnlRacks.Width, 24));
                     
                 }
 
@@ -84,16 +100,36 @@ namespace M64MMOrkestrator.Controls
                 // Keyframes go over the racks and so any modifiers
                 for (int i = 0; i < krArray.Count(); i++)
                 {
-                    foreach (Keyframe kf in krArray[i].OrderedGenericList)
+                    foreach (Keyframe kf in krArray[i].Value.OrderedGenericList)
                     {
-                        g.DrawImageUnscaled(Keyframe.KeyframeInterp[kf.InterpolationType], (int)(kf.Position * frameSizeInPixels) - 12, 0 + 33 + (i * 24));
+                        if (_tl.UncommittedRackChanges[krArray[i].Key] != null && _tl.UncommittedRackChanges[krArray[i].Key].Keyframes.Contains(kf))
+                        {
+                            int delta = _tl.UncommittedRackChanges[krArray[i].Key].Delta;
+                            g.DrawImageUnscaled(Keyframe.KeyframeInterp[kf.InterpolationType], (int)((kf.Position + delta) * frameSizeInPixels) - 12, 0 + 33 + (i * 24) - 8);
+                            g.DrawImageUnscaled(Resources.moveKeyframes, (int)((kf.Position + delta) * frameSizeInPixels) - 12 + 8, 35 + (i * 24));
+                            continue;
+                        }
+
+                        g.DrawImageUnscaled(Keyframe.KeyframeInterp[kf.InterpolationType], (int)(kf.Position * frameSizeInPixels) - 12, 0 + 35 + (i * 24));
                         if (_tl.SelectedKeyframes.Contains(kf))
                         {
-                            g.DrawImageUnscaled(Resources.fSelected, (int)(kf.Position * frameSizeInPixels) - 12 + 8, 33 + (i * 24) + 8);
+                            g.DrawImageUnscaled(Resources.fSelected, (int)(kf.Position * frameSizeInPixels) - 12 + 8, 35 + (i * 24) + 8);
                         }
                     }
                 }
-                
+
+                GraphicsPath trackheadPath = new GraphicsPath();
+                trackheadPath.AddPolygon(new PointF[]
+                {
+                    new(_tl.TrackheadPosition * frameSizeInPixels - 4, 25),
+                    new(_tl.TrackheadPosition * frameSizeInPixels + 4, 25),
+                    new(_tl.TrackheadPosition * frameSizeInPixels, 32)
+                });
+
+                g.DrawLine(trackBodyPen, _tl.TrackheadPosition * frameSizeInPixels, 32, _tl.TrackheadPosition * frameSizeInPixels, pnlRacks.Height);
+                g.FillPath(trackHeadBrush, trackheadPath);
+                g.DrawPath(trackHeadPen, trackheadPath);
+
             }
         }
 
@@ -101,7 +137,7 @@ namespace M64MMOrkestrator.Controls
         {
             frameSizeInPixels = tbZoom.Value;
             pnlRacks.Width = _tl.Length * frameSizeInPixels;
-            pnlRacks.Refresh();
+            Redraw();
         }
 
         private void scRackTitles_Panel2_Scroll(object sender, ScrollEventArgs e)
@@ -119,21 +155,51 @@ namespace M64MMOrkestrator.Controls
         {
             using (Graphics g = e.Graphics)
             {
+                bool isSelected = ((e.State & DrawItemState.Selected) == DrawItemState.Selected);
                 e.DrawBackground();
+
+                SolidBrush blackbrush = new(Color.Black);
+                SolidBrush whitebrush = new(Color.White);
+
+                g.DrawString(lbRackTitles.Items.Cast<KeyValuePair<string, KeyframeRack>>().ToArray()[e.Index].Value.Name, Font, (isSelected ? whitebrush : blackbrush) , 12f, e.Bounds.Top + e.Bounds.Height / 2f - Font.Height/2);
                 e.DrawFocusRectangle();
-                g.DrawString(lbRackTitles.Items.Cast<KeyValuePair<string, KeyframeRack>>().ToArray()[e.Index].Value.Name, Font, new SolidBrush(Color.Black), 12f, e.Bounds.Height / 2f);
             }
         }
 
         private void btnAddKf_Click(object sender, EventArgs e)
         {
-
+            Redraw();
         }
 
         private void btnSelectKf_Click(object sender, EventArgs e)
         {
+            _tl.CommitAllChanges();
             _tl.SelectedKeyframes.Clear();
-            _tl.SelectedKeyframes.AddRange(_tl.GetKeyframesAtTrackhead());
+            // woah! antidupes!
+            _tl.SelectedKeyframes.AddRange(_tl.GetKeyframesAtTrackhead().Except(_tl.SelectedKeyframes.ToArray()));
+            Redraw();
+        }
+
+        private void btnNudgeL_Click(object sender, EventArgs e)
+        {
+            _tl.StageSelectedKeyframes();
+            _tl.MoveAllDeltas(false);
+            Redraw();
+        }
+
+        private void btnNudgeR_Click(object sender, EventArgs e)
+        {
+            _tl.StageSelectedKeyframes();
+            _tl.MoveAllDeltas(true);
+            Redraw();
+        }
+
+        private void scTimelineSplit_Panel2_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
+            {
+                scRackTitles.VerticalScroll.Value = e.NewValue;
+            }
         }
     }
 }

@@ -172,6 +172,9 @@
   <data name="fSub" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fSub.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="moveKeyframes" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\moveKeyframes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="nudgeKfLeft" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\nudgeKfLeft.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

@@ -7,6 +7,7 @@ using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using M64MMOrkestrator.Classes;
 using M64MMOrkestrator.Extensions;
 
 namespace M64MMOrkestrator.KIO
@@ -26,14 +27,17 @@ namespace M64MMOrkestrator.KIO
         /// <returns></returns>
         public abstract Keyframe GetKeyframeAtPosition(int frame);
 
+        public abstract void Commit(UncommittedRackChange changes);
 
-        internal uint _currentFrame;
 
-        public uint CurrentFrame
+        internal int _currentFrame;
+
+        public int CurrentFrame
         {
             get => _currentFrame;
             set
             {
+                if (value < 0) value = 0;
                 _currentFrame = value;
                 ReferenceFrame = value;
                 OnCurrentFrameChanged.Invoke();
@@ -43,20 +47,17 @@ namespace M64MMOrkestrator.KIO
         /// <summary>
         /// Used when Timeline Sync is not enabled
         /// </summary>
-        public uint ReferenceFrame
+        public int ReferenceFrame
         {
             get => _currentFrame;
-            set
-            {
-                _currentFrame = value;
-            }
+            set => _currentFrame = value;
         }
 
         /// <summary>
         /// Adds the current value from the Getter Delegate at the desired position
         /// </summary>
         /// <param name="framepos"></param>
-        public abstract void AddCurrentStateAtPosition(uint framepos);
+        public abstract void AddCurrentStateAtPosition(int framepos);
 
         public delegate void CurrentFrameChanged();
         /// <summary>
@@ -114,7 +115,7 @@ namespace M64MMOrkestrator.KIO
             AddCurrentStateAtPosition(0);
         }
 
-        public uint FarthestKeyframePosition()
+        public int FarthestKeyframePosition()
         {
             return this.Select(x => x.Position).Max();
         }
@@ -218,18 +219,18 @@ namespace M64MMOrkestrator.KIO
         /// <returns></returns>
         public abstract TKeyframe NShake(Keyframe<TKeyframe>[] points);
 
-        bool IsPositionBetweenTwoKeyframes(uint position, Keyframe<TKeyframe> start, Keyframe<TKeyframe> end)
+        bool IsPositionBetweenTwoKeyframes(int position, Keyframe<TKeyframe> start, Keyframe<TKeyframe> end)
         {
             if (start == null || end == null) return false;
             return (position < end.Position && position > start.Position);
         }
 
 
-        public override void AddCurrentStateAtPosition(uint framepos)
+        public override void AddCurrentStateAtPosition(int framepos)
         {
             TKeyframe currentVal = valueGetter();
             ReassessClosestFrames();
-            if (!IsPositionBetweenTwoKeyframes(CurrentFrame, closestBehindKeyframe, closestFrontKeyframe) && closestBehindKeyframe.Position == CurrentFrame)
+            if (closestBehindKeyframe != null && !IsPositionBetweenTwoKeyframes(CurrentFrame, closestBehindKeyframe, closestFrontKeyframe) && closestBehindKeyframe.Position == CurrentFrame)
             {
                 closestBehindKeyframe.CurrentValue = currentVal;
                 return;
@@ -239,6 +240,21 @@ namespace M64MMOrkestrator.KIO
                 Position = CurrentFrame
             };
             Add(_keyframe);
+        }
+
+        public override void Commit(UncommittedRackChange changes)
+        {
+            int[] frameNumbers = changes.Keyframes.Select(x => (x.Position + changes.Delta)).ToArray();
+            List<Keyframe> conflicts = new List<Keyframe>();
+            conflicts.AddRange(elements.Where(x => frameNumbers.Contains(x.Position)));
+            foreach (Keyframe conflKeyframe in conflicts)
+            {
+                elements.Remove((Keyframe<TKeyframe>)conflKeyframe);
+            }
+            foreach (Keyframe kf in changes.Keyframes)
+            {
+                kf.Position += changes.Delta;
+            }
         }
 
 
