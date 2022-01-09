@@ -16,12 +16,16 @@ namespace M64MMOrkestrator.Controls
 {
     public partial class TimelineRenderer : UserControl
     {
-        private Brush headerBrush = new SolidBrush(Color.DarkGray);
+        private Brush headerBrush = new SolidBrush(Color.FromArgb(150, 0, 0, 0));
+        private Brush frameNumBrush = new SolidBrush(Color.White);
+
+        private Brush checkerboardBrush =
+            new HatchBrush(HatchStyle.LargeCheckerBoard, Color.FromArgb(128, 255, 255, 255), Color.FromArgb(64, 255, 255, 255));
         private Brush trackevenBrush = new SolidBrush(Color.FromArgb(0x717171));
         private Brush trackoddBrush = new SolidBrush(Color.FromArgb(0x5b5b5b));
-        private Brush trackHeadBrush = new SolidBrush(Color.FromArgb(255, 53, 104, 216));
-        private Pen trackHeadPen = new Pen(Color.FromArgb(255, 13, 68, 191));
-        private Pen trackBodyPen = new Pen(Color.FromArgb(255, 52, 112, 246));
+        private Brush trackHeadBrush = new SolidBrush(Color.White);
+        private Pen trackHeadPen = new Pen(Color.Black);
+        private Pen trackBodyPen = new Pen(Color.FromArgb(255, 82, 135, 255));
         private Pen frameCountPen = new Pen(Color.LightGray, 1);
         private BindingSource _tlBs = new BindingSource();
 
@@ -54,13 +58,13 @@ namespace M64MMOrkestrator.Controls
 
             frameSizeInPixels = tbZoom.Value;
             pnlRacks.Width = _tl.Length * frameSizeInPixels;
-            lbRackTitles.Height = lbRackTitles.ItemHeight * lbRackTitles.Items.Count;
+            lbRackTitles.Height = lbRackTitles.ItemHeight * (lbRackTitles.Items.Count+1);
             pnlRacks.Height = scRackTitles.Panel1.Height + lbRackTitles.Height + 4;
             
             scRackTitles.Panel2.AutoScrollPosition = new Point(0, 0);
             scRackTitles.Panel2.VerticalScroll.Maximum = 999;
             _tl.OnTrackheadChanged += (time) => Redraw();
-            trackHeadPen.Width = 2;
+            trackHeadPen.Width = 1;
             trackBodyPen.Width = 2;
             Redraw();
         }
@@ -75,15 +79,29 @@ namespace M64MMOrkestrator.Controls
         {
             using (Graphics g = e.Graphics)
             {
+                int headerHeight = 32;
+
                 // Clear background of panel
                 g.Clear(Color.DarkSlateGray);
+                g.FillRectangle(checkerboardBrush, new Rectangle(0, headerHeight + 5, pnlRacks.Width, pnlRacks.Height - headerHeight));
+                Font frameFont = new Font(Font.FontFamily, 8, FontStyle.Regular);
+                
+                // Calculate the separation between framenumbers
+                int framenumModulo = (int)Math.Max(Math.Round(g.MeasureString("999", frameFont).Width / frameSizeInPixels * 1.5), 1);
+
 
                 // Make header and framelines
-                g.FillRectangle(headerBrush, new Rectangle(0, 0, pnlRacks.Width, 32));
-                for (int i = 0; i < _tl.Length; i++)
+                g.FillRectangle(headerBrush, new Rectangle(0, 0, pnlRacks.Width, headerHeight));
+                for (int i = 0; i <= _tl.Length; i++)
                 {
-                    g.DrawLine(frameCountPen, 0 + frameSizeInPixels * i, 31, 0 + frameSizeInPixels * i, 16);
+                    g.DrawLine(frameCountPen, 0 + frameSizeInPixels * i, headerHeight - 1, 0 + frameSizeInPixels * i, (i % framenumModulo == 0 ? headerHeight - 13 : headerHeight - 4));
+                    if (i % framenumModulo == 0)
+                    {
+                        SizeF nmeasure = g.MeasureString(i.ToString(), frameFont);
+                        g.DrawString(i.ToString(), frameFont, frameNumBrush, i * frameSizeInPixels, headerHeight - 10 - (nmeasure.Height / 2));
+                    }
                 }
+                g.DrawLine(frameCountPen, 0, headerHeight, pnlRacks.Width, headerHeight);
 
                 // Flatten the keyframe racks to an array
                 // TODO: Potentially give the user a way to organize the racks however they want
@@ -118,25 +136,29 @@ namespace M64MMOrkestrator.Controls
                     }
                 }
 
+                
                 GraphicsPath trackheadPath = new GraphicsPath();
                 trackheadPath.AddPolygon(new PointF[]
                 {
-                    new(_tl.TrackheadPosition * frameSizeInPixels - 4, 25),
-                    new(_tl.TrackheadPosition * frameSizeInPixels + 4, 25),
-                    new(_tl.TrackheadPosition * frameSizeInPixels, 32)
+                    new(_tl.TrackheadPosition * frameSizeInPixels - 5, 14),
+                    new(_tl.TrackheadPosition * frameSizeInPixels - 5, 25),
+                    new(_tl.TrackheadPosition * frameSizeInPixels, 32),
+                    new(_tl.TrackheadPosition * frameSizeInPixels + 6, 25),
+                    new(_tl.TrackheadPosition * frameSizeInPixels + 6, 14)
                 });
 
                 g.DrawLine(trackBodyPen, _tl.TrackheadPosition * frameSizeInPixels, 32, _tl.TrackheadPosition * frameSizeInPixels, pnlRacks.Height);
+                g.SmoothingMode = SmoothingMode.AntiAlias;
                 g.FillPath(trackHeadBrush, trackheadPath);
                 g.DrawPath(trackHeadPen, trackheadPath);
-
+                g.SmoothingMode = SmoothingMode.HighSpeed;
             }
         }
 
         private void tbZoom_Scroll(object sender, EventArgs e)
         {
             frameSizeInPixels = tbZoom.Value;
-            pnlRacks.Width = _tl.Length * frameSizeInPixels;
+            pnlRacks.Width = _tl.Length * frameSizeInPixels + (frameSizeInPixels) + (int)(Font.Height * _tl.Length.ToString().Length / 2);
             Redraw();
         }
 
