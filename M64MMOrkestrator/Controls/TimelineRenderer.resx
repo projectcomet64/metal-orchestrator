@@ -267,4 +267,26 @@
         2QAAAABJRU5ErkJggg==
 </value>
   </data>
+  <metadata name="ttButtonInfo.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="btnAdvance.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wwAADsMBx2+oZAAAAH1JREFUSEvtjUEKwCAQA/3/p1uEBkLMbi1qwdIBL0mcLZ/nuN4ycOA/0oU7MnQw
+        ErrsMSxSgct1k8ICPMV1bmfhjyph0HEfbUNUoKDnTbZv0M8Ket5k+wb9zKDjPtqGqAAg587tblFJBRnn
+        uunGiVw2hdfl09hXXlkq34FSTnh5YZ+A81cfAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="btnStepback.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wwAADsMBx2+oZAAAAHpJREFUSEvtjdEKgCAQBP3/ny4INybSvTMQiRrw6WbW8nm2+qag8SkfvGucQ8vG
+        3a0LZTfAW+vehKKLees5NyhFIW/OO6GgIIwqKZeCgjCqpF1KijJh1jugqDCKM84FyordQHRvwkADvRF3
+        szDSyKOhLP8nQ0z/YDWl7EKTYZ+tqN8bAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <metadata name="cmsKeyframeSettings.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>135, 17</value>
+  </metadata>
 </root>

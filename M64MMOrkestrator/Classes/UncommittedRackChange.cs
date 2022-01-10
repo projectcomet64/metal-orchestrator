@@ -14,6 +14,8 @@ namespace M64MMOrkestrator.Classes
 
         public Keyframe[] Keyframes => _affectedKeyframes;
 
+        public KeyframeType? NewInterpolation { get; set; }
+
         private int _delta;
 
         /// <summary>

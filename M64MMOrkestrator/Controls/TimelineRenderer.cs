@@ -48,6 +48,14 @@ namespace M64MMOrkestrator.Controls
             _tl = tl;
             _tlBs.DataSource = _tl.KeyframeRacks;
             InitializeComponent();
+
+            tsmLinear.Click += (a, b) => _tl.SetSelectedKeyframeInterpolation(KeyframeType.Linear);
+            tsmSlow.Click += (a, b) => _tl.SetSelectedKeyframeInterpolation(KeyframeType.Slow);
+            tsmFast.Click += (a, b) => _tl.SetSelectedKeyframeInterpolation(KeyframeType.Fast);
+            tsmSharp.Click += (a, b) => _tl.SetSelectedKeyframeInterpolation(KeyframeType.Sharp);
+            tsmSmooth.Click += (a, b) => _tl.SetSelectedKeyframeInterpolation(KeyframeType.Smooth);
+            tsmHold.Click += (a, b) => _tl.SetSelectedKeyframeInterpolation(KeyframeType.Hold);
+
             lbRackTitles.DataSource = _tlBs;
             lbRackTitles.DisplayMember = "Value";
             lbRackTitles.ValueMember = "Key";
@@ -63,7 +71,7 @@ namespace M64MMOrkestrator.Controls
             
             scRackTitles.Panel2.AutoScrollPosition = new Point(0, 0);
             scRackTitles.Panel2.VerticalScroll.Maximum = 999;
-            _tl.OnTrackheadChanged += (time) => Redraw();
+            _tl.OnTrackheadChanged += (tl, e) => Redraw();
             trackHeadPen.Width = 1;
             trackBodyPen.Width = 2;
             Redraw();
@@ -123,7 +131,11 @@ namespace M64MMOrkestrator.Controls
                         if (_tl.UncommittedRackChanges[krArray[i].Key] != null && _tl.UncommittedRackChanges[krArray[i].Key].Keyframes.Contains(kf))
                         {
                             int delta = _tl.UncommittedRackChanges[krArray[i].Key].Delta;
-                            g.DrawImageUnscaled(Keyframe.KeyframeInterp[kf.InterpolationType], (int)((kf.Position + delta) * frameSizeInPixels) - 12, 0 + 33 + (i * 24) - 8);
+                            g.DrawImageUnscaled(
+                                (_tl.UncommittedRackChanges[krArray[i].Key].NewInterpolation == null
+                                    ? Keyframe.KeyframeInterp[kf.InterpolationType]
+                                    : Keyframe.KeyframeInterp[(KeyframeType)_tl.UncommittedRackChanges[krArray[i].Key].NewInterpolation]),
+                                (int)((kf.Position + delta) * frameSizeInPixels) - 12, 0 + 33 + (i * 24) - 8);
                             g.DrawImageUnscaled(Resources.moveKeyframes, (int)((kf.Position + delta) * frameSizeInPixels) - 12 + 8, 35 + (i * 24));
                             continue;
                         }
@@ -190,12 +202,13 @@ namespace M64MMOrkestrator.Controls
 
         private void btnAddKf_Click(object sender, EventArgs e)
         {
+            _tl.AddAllCurrentValuesToRacks();
             Redraw();
         }
 
         private void btnSelectKf_Click(object sender, EventArgs e)
         {
-            _tl.CommitAllChanges();
+            _tl.CommitAllStaged();
             _tl.SelectedKeyframes.Clear();
             // woah! antidupes!
             _tl.SelectedKeyframes.AddRange(_tl.GetKeyframesAtTrackhead().Except(_tl.SelectedKeyframes.ToArray()));
@@ -222,6 +235,24 @@ namespace M64MMOrkestrator.Controls
             {
                 scRackTitles.VerticalScroll.Value = e.NewValue;
             }
+        }
+
+        private void btnRemoveKf_Click(object sender, EventArgs e)
+        {
+            if (_tl.StagedKeyframesPresent)
+            {
+                _tl.DeleteAllStaged();
+            }
+            else
+            {
+                _tl.DeleteKeyframesAtTrackhead();
+            }
+        }
+
+        private void btnSandwichOpts_Click(object sender, EventArgs e)
+        {
+            miInterpolation.Enabled = _tl.StagedKeyframesPresent || _tl.SelectedKeyframes.Count > 0;
+                cmsKeyframeSettings.Show((Control)sender, (int)((Control)sender).Bounds.Width / 2, (int)((Control)sender).Bounds.Height / 2);
         }
     }
 }

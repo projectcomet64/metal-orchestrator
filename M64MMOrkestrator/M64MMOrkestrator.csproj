@@ -55,6 +55,7 @@
     <Compile Include="Classes\Marker.cs" />
     <Compile Include="Classes\Region.cs" />
     <Compile Include="Classes\Timeline.cs" />
+    <Compile Include="Classes\TimelineEventArgClasses.cs" />
     <Compile Include="Classes\UncommittedRackChange.cs" />
     <Compile Include="Classes\XYAngle.cs" />
     <Compile Include="Controls\DoubleBufferedPanel.cs">
@@ -200,6 +201,27 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\moveKeyframes.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sandwich.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\end.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\begin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frameadvance.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\framestepback.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

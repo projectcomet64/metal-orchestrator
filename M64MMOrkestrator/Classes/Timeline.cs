@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -47,19 +48,21 @@ namespace M64MMOrkestrator.KIO
         public List<Marker> Markers { get; set; }
 
 
-        // TODO FUTURE: Add methods to remove and add racks instead of providing direct access to the Dictionary that holds the racks
-        public enum KeyframeRackChange
-        {
-            ADD,
-            DELETE,
-            TOGGLE // Enable/disable
-        }
+        // TODO SOMETIME: ...add undo functionality through specific change undo
 
-        public delegate void KeyframeRackChanged (string id, KeyframeRackChange change);
+        public delegate void KeyframeChanged(object sender, KeyframeChangedEventArgs e);
 
-        public event KeyframeRackChanged OnKeyframeRackChanged;
+        public event KeyframeChanged OnKeyframeChanged;
 
-        public delegate void TrackheadChanged(int position);
+        public delegate void KeyframeBulkChanged(object sender, KeyframeBulkChangedEventArgs e);
+
+        public event KeyframeBulkChanged OnKeyframeBulkChanged;
+
+        public delegate void ChangesCommitted(object sender, ChangesCommittedEventArgs e);
+
+        public event ChangesCommitted OnChangesCommitted;
+
+        public delegate void TrackheadChanged(object sender, TrackheadChangedEventArgs e);
 
         public event TrackheadChanged OnTrackheadChanged;
 
@@ -68,13 +71,15 @@ namespace M64MMOrkestrator.KIO
 
         public List<Keyframe> SelectedKeyframes { get; set; } = new List<Keyframe>();
 
+        public bool StagedKeyframesPresent => UncommittedRackChanges.Any(x => x.Value != null);
+
         public int TrackheadPosition
         {
             get => _trackHead;
             set
             {
                 _trackHead = value;
-                OnTrackheadChanged?.Invoke(value);
+                OnTrackheadChanged?.Invoke(this, new TrackheadChangedEventArgs(value));
                 foreach (KeyframeRack kRack in KeyframeRacks.Values)
                 {
                     if (Synchronize) kRack.CurrentFrame = value;
@@ -88,10 +93,7 @@ namespace M64MMOrkestrator.KIO
         /// </summary>
         public void StageSelectedKeyframes()
         {
-            foreach (KeyValuePair<string, UncommittedRackChange> uChange in UncommittedRackChanges)
-            {
-                if (uChange.Value != null) return; // staging area must be clean otherwise no
-            }
+            if (StagedKeyframesPresent) return; // staging area must be clean otherwise no
 
             foreach (KeyValuePair<string, KeyframeRack> kRack in KeyframeRacks)
             {
@@ -102,6 +104,58 @@ namespace M64MMOrkestrator.KIO
             }
         }
 
+        /// <summary>
+        /// Deletes the keyframes under the trackhead from their racks.
+        /// </summary>
+        public void DeleteKeyframesAtTrackhead()
+        {
+            Keyframe[] underTrackhead = GetKeyframesAtTrackhead();
+            foreach (KeyValuePair<string, KeyframeRack> kRack in KeyframeRacks)
+            {
+                Keyframe[] selected = kRack.Value.OrderedGenericList.Where(x => underTrackhead.Contains(x)).ToArray();
+                if (selected.Length == 0) continue;
+                foreach (Keyframe sKf in selected)
+                {
+                    kRack.Value.Remove(sKf);
+                    OnKeyframeChanged?.Invoke(this, new KeyframeChangedEventArgs(sKf, ChangeType.DELETION, kRack.Key));
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Sets the interpolations of every keyframe selected.
+        /// </summary>
+        public void SetSelectedKeyframeInterpolation(KeyframeType? interp)
+        {
+            if (!StagedKeyframesPresent) StageSelectedKeyframes();
+            foreach (KeyValuePair<string, UncommittedRackChange> uChange in UncommittedRackChanges)
+            {
+                if (UncommittedRackChanges[uChange.Key] == null) continue;
+
+                UncommittedRackChanges[uChange.Key].NewInterpolation = interp;
+            }
+            OnTrackheadChanged?.Invoke(this, new TrackheadChangedEventArgs(TrackheadPosition));
+        }
+
+        /// <summary>
+        /// Clears the keyframes currently marked for editing.
+        /// </summary>
+        public void ClearStagedKeyframes()
+        {
+            KeyValuePair<string, UncommittedRackChange>[] ucArray = UncommittedRackChanges.Cast<KeyValuePair<string, UncommittedRackChange>>().ToArray();
+
+            for (int i = 0; i < ucArray.Length; i++)
+            {
+                UncommittedRackChanges[ucArray[i].Key].Dispose();
+                UncommittedRackChanges[ucArray[i].Key] = null;
+            }
+        }
+
+        /// <summary>
+        /// Changes the delta (position difference) for the staged keyframes by one.
+        /// </summary>
+        /// <param name="forward">Move forwards or backwards? Limited when any of the deltas can't move further.</param>
         public void MoveAllDeltas(bool forward)
         {
             bool canMove = UncommittedRackChanges.Where(x => x.Value != null).All(x => x.Value?.CanMoveBackwards == true);
@@ -114,9 +168,18 @@ namespace M64MMOrkestrator.KIO
             }
         }
 
-        public void CommitAllChanges()
+        /// <summary>
+        /// Commits all staged keyframes.
+        /// </summary>
+        public void CommitAllStaged()
         {
             KeyValuePair<string, UncommittedRackChange>[] ucArray = UncommittedRackChanges.Cast<KeyValuePair<string, UncommittedRackChange>>().ToArray();
+
+            ReadOnlyDictionary<string, UncommittedRackChange> forEventChanges =
+                new ReadOnlyDictionary<string, UncommittedRackChange>(UncommittedRackChanges);
+
+            OnChangesCommitted?.Invoke(this, new ChangesCommittedEventArgs(forEventChanges));
+
             for (int i = 0; i < ucArray.Length; i++)
             {
                 if (UncommittedRackChanges[ucArray[i].Key] == null) continue;
@@ -126,17 +189,57 @@ namespace M64MMOrkestrator.KIO
             }
         }
 
+        /// <summary>
+        /// Removes all staged keyframes from their racks.
+        /// </summary>
+        public void DeleteAllStaged()
+        {
+            KeyValuePair<string, UncommittedRackChange>[] ucArray = UncommittedRackChanges.Cast<KeyValuePair<string, UncommittedRackChange>>().ToArray();
+
+            ReadOnlyDictionary<string, UncommittedRackChange> forEventChanges =
+                new ReadOnlyDictionary<string, UncommittedRackChange>(UncommittedRackChanges);
+            OnKeyframeBulkChanged?.Invoke(this, new KeyframeBulkChangedEventArgs(forEventChanges, ChangeType.DELETION));
+
+            for (int i = 0; i < ucArray.Length; i++)
+            {
+                if (UncommittedRackChanges[ucArray[i].Key] == null) continue;
+
+                foreach (Keyframe kf in UncommittedRackChanges[ucArray[i].Key].Keyframes)
+                {
+                    try
+                    {
+                        KeyframeRacks[ucArray[i].Key].Remove(kf);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine($"Couldn't erase a keyframe from ID {ucArray[i].Key}: {e.Message}");
+                    }
+                }
+                UncommittedRackChanges[ucArray[i].Key] = null;
+            }
+        }
+
+        /// <summary>
+        /// Adds a rack to this Timeline
+        /// </summary>
+        /// <param name="id">Rack ID</param>
+        /// <param name="rack">Rack to add</param>
         public void AddRack(string id, KeyframeRack rack)
         {
             KeyframeRacks.Add(id, rack);
             UncommittedRackChanges.Add(id, null);
         }
 
+        /// <summary>
+        /// Tells the rack by ID to add a new value at the rack.
+        /// </summary>
+        /// <param name="rack">Rack ID</param>
         public void AddValueToRack(string rack)
         {
             try
             {
-                KeyframeRacks[rack].AddCurrentStateAtPosition(TrackheadPosition);
+                Keyframe kf = KeyframeRacks[rack].AddCurrentStateAtPosition(TrackheadPosition);
+                OnKeyframeChanged?.Invoke(this, new KeyframeChangedEventArgs(kf, ChangeType.ADDITION, rack));
             }
             catch (Exception ex)
             {
@@ -147,14 +250,14 @@ namespace M64MMOrkestrator.KIO
         /// <summary>
         /// Gets an array of all generic keyframes found at the current position
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Array of keyframes found at the trackhead's position</returns>
         public Keyframe[] GetKeyframesAtTrackhead()
         {
             List<Keyframe> kfList = new List<Keyframe>();
 
             if (SelectedRacks.Count == 0)
             {
-                if (ActiveRack == null) return new Keyframe[]{};
+                if (ActiveRack == null) return new Keyframe[] { };
                 else
                 {
                     Keyframe foundKeyframe = KeyframeRacks[ActiveRack].GetKeyframeAtPosition((int)TrackheadPosition);

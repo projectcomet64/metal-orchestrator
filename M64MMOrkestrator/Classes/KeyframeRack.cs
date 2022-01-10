@@ -57,7 +57,7 @@ namespace M64MMOrkestrator.KIO
         /// Adds the current value from the Getter Delegate at the desired position
         /// </summary>
         /// <param name="framepos"></param>
-        public abstract void AddCurrentStateAtPosition(int framepos);
+        public abstract Keyframe AddCurrentStateAtPosition(int framepos);
 
         public delegate void CurrentFrameChanged();
         /// <summary>
@@ -69,6 +69,13 @@ namespace M64MMOrkestrator.KIO
         {
             return Name;
         }
+
+        public abstract void Add(Keyframe item);
+
+        public abstract void Clear();
+
+        public abstract bool Remove(Keyframe item);
+
     }
 
     /// <summary>
@@ -162,24 +169,44 @@ namespace M64MMOrkestrator.KIO
         public virtual TKeyframe CalculateInterpolation(bool reassess = true)
         {
             if (reassess) ReassessClosestFrames();
-            if (closestBehindKeyframe == null) return closestFrontKeyframe.CurrentValue;
+            if (closestBehindKeyframe == null) return elements[0].CurrentValue;
             if (closestFrontKeyframe == null) return closestBehindKeyframe.CurrentValue;
+            float progress = (float) TrackHeadDistanceToKeyframe(closestBehindKeyframe) /
+                             closestBehindKeyframe.Distance(closestFrontKeyframe);
 
             switch (closestBehindKeyframe.InterpolationType)
             {
                 case KeyframeType.Bezier:
                     {
-                        return NBezier(closestBehindKeyframe.Subordinates,
-                            (float)TrackHeadDistanceToKeyframe(closestBehindKeyframe) /
-                            closestBehindKeyframe.Distance(closestFrontKeyframe));
+                        return NBezier(closestBehindKeyframe.Subordinates, progress);
                     }
                 case KeyframeType.Linear:
                 default:
                     {
-                        return Lerp(closestBehindKeyframe, closestFrontKeyframe,
-                            (float)TrackHeadDistanceToKeyframe(closestBehindKeyframe) /
-                            closestBehindKeyframe.Distance(closestFrontKeyframe));
+                        return Lerp(closestBehindKeyframe, closestFrontKeyframe, progress);
                     }
+                case KeyframeType.Fast:
+                {
+                    return Lerp(closestBehindKeyframe, closestFrontKeyframe, 1 - (1 - progress) * (1 - progress));
+                    }
+                case KeyframeType.Slow:
+                {
+                    return Lerp(closestBehindKeyframe, closestFrontKeyframe, progress * progress);
+                    }
+                case KeyframeType.Smooth:
+                {
+                    // PIECEWISE FUNCTIONS‼
+                    // WHAT THE FUUUUU-
+                    return Lerp(closestBehindKeyframe, closestFrontKeyframe, (float)(progress < 0.5 ? 2 * progress * progress : 1 - Math.Pow(-2 * progress + 2, 2) / 2));
+                    }
+                case KeyframeType.Sharp:
+                {
+                    // ANOTHER PIECEWISE FUNCTION‼
+                    return Lerp(closestBehindKeyframe, closestFrontKeyframe,
+                        (float)(progress < 0.5 ? 
+                            -2 * Math.Pow((progress - 0.5), 2) + 0.5 :
+                            2 * Math.Pow((progress - 0.5), 2) + 0.5));
+                }
                 case KeyframeType.Hold:
                     {
                         return closestBehindKeyframe.CurrentValue;
@@ -226,20 +253,21 @@ namespace M64MMOrkestrator.KIO
         }
 
 
-        public override void AddCurrentStateAtPosition(int framepos)
+        public override Keyframe AddCurrentStateAtPosition(int framepos)
         {
             TKeyframe currentVal = valueGetter();
             ReassessClosestFrames();
             if (closestBehindKeyframe != null && !IsPositionBetweenTwoKeyframes(CurrentFrame, closestBehindKeyframe, closestFrontKeyframe) && closestBehindKeyframe.Position == CurrentFrame)
             {
                 closestBehindKeyframe.CurrentValue = currentVal;
-                return;
+                return closestBehindKeyframe;
             }
             Keyframe<TKeyframe> _keyframe = new Keyframe<TKeyframe>(currentVal)
             {
                 Position = CurrentFrame
             };
             Add(_keyframe);
+            return _keyframe;
         }
 
         public override void Commit(UncommittedRackChange changes)
@@ -253,7 +281,12 @@ namespace M64MMOrkestrator.KIO
             }
             foreach (Keyframe kf in changes.Keyframes)
             {
+                if (!elements.Contains(kf)) elements.Add((Keyframe<TKeyframe>)kf);
                 kf.Position += changes.Delta;
+                if (changes.NewInterpolation != null)
+                {
+                    kf.InterpolationType = (KeyframeType)changes.NewInterpolation;
+                }
             }
         }
 
@@ -266,11 +299,19 @@ namespace M64MMOrkestrator.KIO
 
         public void Add(Keyframe<TKeyframe> item)
         {
+            Keyframe<TKeyframe> collision = elements.FirstOrDefault(x => x.Position == item?.Position);
+            if (collision != null) Remove(collision);
             elements.Add(item);
             ReassessClosestFrames();
         }
 
-        public void Clear()
+        public override void Add(Keyframe item)
+        {
+            if (item.GetType() != typeof(Keyframe<TKeyframe>)) throw new ArgumentException($"Cannot add the {item.GetType()} to a {this.GetType()}");
+            Add((Keyframe<TKeyframe>)item);
+        }
+
+        public override void Clear()
         {
             elements.Clear();
             AddCurrentStateAtPosition(0);
@@ -289,6 +330,13 @@ namespace M64MMOrkestrator.KIO
 
             return true;
         }
+
+        public override bool Remove(Keyframe item)
+        {
+            if (item.GetType() != typeof(Keyframe<TKeyframe>)) throw new ArgumentException($"Cannot add the {item.GetType()} to a {this.GetType()}");
+            return Remove((Keyframe<TKeyframe>)item);
+        }
+
 
         public bool Contains(Keyframe<TKeyframe> item)
         {
