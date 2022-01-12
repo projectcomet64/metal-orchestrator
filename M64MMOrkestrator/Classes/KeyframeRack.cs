@@ -15,10 +15,9 @@ namespace M64MMOrkestrator.KIO
 
     public abstract class KeyframeRack
     {
-
         public string Name { get; set; }
 
-        public virtual List<Keyframe> OrderedGenericList { get; set; }
+        public abstract List<Keyframe> OrderedGenericList { get; }
 
         /// <summary>
         /// Returns the keyframe found at the specified frame. Null if there's none.
@@ -27,8 +26,22 @@ namespace M64MMOrkestrator.KIO
         /// <returns></returns>
         public abstract Keyframe GetKeyframeAtPosition(int frame);
 
+        /// <summary>
+        /// Commits changes to this rack.
+        /// </summary>
+        /// <param name="changes">The UncommitedRackChange which contains the changes to perform.</param>
         public abstract void Commit(UncommittedRackChange changes);
 
+        /// <summary>
+        /// Returns the keyframe behind the current reference frame.
+        /// </summary>
+        public abstract Keyframe ImmediateBehindKeyframe { get;}
+        public abstract Keyframe ImmediateForwardKeyframe { get;}
+
+        /// <summary>
+        /// Updates the Immediate Behind and Immediate Forward Keyframes.
+        /// </summary>
+        public abstract void UpdateImmediates();
 
         internal int _currentFrame;
 
@@ -38,19 +51,22 @@ namespace M64MMOrkestrator.KIO
             set
             {
                 if (value < 0) value = 0;
-                _currentFrame = value;
                 ReferenceFrame = value;
                 OnCurrentFrameChanged.Invoke();
             }
         }
 
         /// <summary>
-        /// Used when Timeline Sync is not enabled
+        /// Used by Timeline when Timeline Sync is not enabled
         /// </summary>
         public int ReferenceFrame
         {
             get => _currentFrame;
-            set => _currentFrame = value;
+            set
+            {
+                _currentFrame = value;
+                UpdateImmediates();
+            }
         }
 
         /// <summary>
@@ -80,6 +96,7 @@ namespace M64MMOrkestrator.KIO
 
     /// <summary>
     /// Base class for Keyframe Racks, which will be the containers of all kinds of keyframes. This class cannot be instantiated.
+    /// <para>You shouldn't use this class's derivatives on their own either. Add them to a Timeline.</para>
     /// </summary>
     /// <typeparam name="TKeyframe">The underlying type for the Keyframes.</typeparam>
     public abstract class KeyframeRack<TKeyframe> : KeyframeRack, IList<Keyframe<TKeyframe>> where TKeyframe : new()
@@ -91,10 +108,18 @@ namespace M64MMOrkestrator.KIO
 
         public List<Keyframe<TKeyframe>> OrderedKeyframes => elements.OrderBy(k => k.Position).ToList();
 
-        public override List<Keyframe> OrderedGenericList { get => OrderedKeyframes.Cast<Keyframe>().ToList(); }
+        public override List<Keyframe> OrderedGenericList => OrderedKeyframes.Cast<Keyframe>().ToList();
 
-        public Keyframe<TKeyframe> closestBehindKeyframe;
-        public Keyframe<TKeyframe> closestFrontKeyframe;
+        /// <summary>
+        /// The reason this one exists while BehindKeyframe still exists is because Behind is margin inclusive,
+        /// meaning it will include the keyframe at its own position too.
+        /// </summary>
+        Keyframe<TKeyframe> closestBackKeyframe;
+        Keyframe<TKeyframe> closestBehindKeyframe;
+        Keyframe<TKeyframe> closestFrontKeyframe;
+
+        public override Keyframe ImmediateBehindKeyframe => closestBackKeyframe;
+        public override Keyframe ImmediateForwardKeyframe => closestFrontKeyframe;
 
 
         protected Func<TKeyframe> valueGetter;
@@ -140,19 +165,21 @@ namespace M64MMOrkestrator.KIO
         }
 
         /// <summary>
-        /// Reanalyzes the keyframes in front and behind the current trackhead.
+        /// Reanalyzes the keyframes in front and behind the current reference trackhead.
         /// </summary>
         public void ReassessClosestFrames()
         {
             List<Keyframe<TKeyframe>> oKeyframes = OrderedKeyframes;
             closestBehindKeyframe = oKeyframes.Where(k => k.Position <= ReferenceFrame && k.SubordinateOf == null)
                 .OrderByDescending(k => k.Position).FirstOrDefault();
+            closestBackKeyframe = oKeyframes.Where(k => k.Position < ReferenceFrame && k.SubordinateOf == null)
+                .OrderByDescending(k => k.Position).FirstOrDefault();
             closestFrontKeyframe = oKeyframes.Where(k => k.Position > ReferenceFrame && k.SubordinateOf == null)
                 .OrderBy(k => k.Position).FirstOrDefault();
         }
 
         /// <summary>
-        /// Returns the distance of the trackhead to the specified keyframe. Throws exception if Keyframe is not present in the KeyframeRack.
+        /// Returns the distance of the trackhead to the specified keyframe. Should throw exception if Keyframe is not present in the KeyframeRack.
         /// </summary>
         /// <param name="kf">The Keyframe to get the distance from</param>
         /// <returns></returns>
@@ -161,11 +188,16 @@ namespace M64MMOrkestrator.KIO
             return (int)Math.Abs(ReferenceFrame - kf.Position);
         }
 
+        public override void UpdateImmediates()
+        {
+            ReassessClosestFrames();
+        }
+
         /// <summary>
         /// Calculates the interpolation in the current track head position.
         /// </summary>
         /// <param name="reassess"></param>
-        /// <returns></returns>
+        /// <returns>The value of the Rack at the current location.</returns>
         public virtual TKeyframe CalculateInterpolation(bool reassess = true)
         {
             if (reassess) ReassessClosestFrames();

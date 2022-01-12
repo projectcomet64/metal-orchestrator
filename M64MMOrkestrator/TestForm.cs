@@ -67,9 +67,6 @@ namespace M64MMOrkestrator
 
         private void btnEnsemble_Click(object sender, EventArgs e)
         {
-            Core.WriteBytes(Core.BaseAddress + 0x245000 + 0x6316c, Resources._6316c, true);
-            Core.WriteBytes(Core.BaseAddress + 0x245000 + 0x31440, Resources._31440, true);
-            Core.WriteBytes(Core.BaseAddress + 0x245000 + 0x42ce0, Resources._42ce0, true);
             KIOBase.Init();
 
         }
@@ -117,7 +114,7 @@ namespace M64MMOrkestrator
 
         private void button7_Click(object sender, EventArgs e)
         {
-            KIOBase.tb?.Show();
+            KIOBase._mainForm?.Show();
         }
     }
 

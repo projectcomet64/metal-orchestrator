@@ -14,7 +14,7 @@ namespace M64MMOrkestrator
 {
     public struct XYAngle : IEquatable<XYAngle>
     {
-        private const float DEG_TO_RAD = 0.0174533f;
+        public const float DEG_TO_RAD = 0.01745329251f;
         private float _x, _y;
 
         public float UnrestrictedX
@@ -54,10 +54,11 @@ namespace M64MMOrkestrator
         public static XYAngle FromVectorPair(Vector3 start, Vector3 lookat)
         {
             Vector3 origVec = lookat - start;
-            origVec /= origVec.Length();
+            if (origVec.Z == 0) origVec.Z = 0.001f;
+                origVec /= origVec.Length();
             float distance = Vector3.Distance(start, lookat);
             return new XYAngle(
-                (float) (Math.Atan2(-origVec.Z, origVec.X)) * 57.2958f,
+                (float) (Math.Atan2(origVec.X, origVec.Z)) * 57.2958f,
                 (float) (Math.Asin(origVec.Y)) * 57.2958f
                 );
         }
@@ -104,8 +105,10 @@ namespace M64MMOrkestrator
 
         public Vector3 LookAtFromPosition(Vector3 start, float length = 200)
         {
-            Vector3 ang = new Vector3((float) (Math.Cos(UnrestrictedX * DEG_TO_RAD) * Math.Cos(UnrestrictedY * DEG_TO_RAD)) * length, (float) (Math.Sin(UnrestrictedY * DEG_TO_RAD)) * length,
-                (float) (Math.Sin(UnrestrictedX * DEG_TO_RAD) * -Math.Cos(UnrestrictedY * DEG_TO_RAD)) * length) ;
+            Vector3 ang = new Vector3(
+                (float) (Math.Sin(UnrestrictedX * DEG_TO_RAD) * Math.Cos(-UnrestrictedY * DEG_TO_RAD)) * length,
+                (float) (Math.Sin(UnrestrictedY * DEG_TO_RAD)) * length,
+                (float) (Math.Cos(UnrestrictedX * DEG_TO_RAD) * Math.Cos(UnrestrictedY * DEG_TO_RAD)) * length);
 
             return ang + start;
         }

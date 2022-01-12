@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using M64MM.Additions;
+using M64MM.Utils;
 using M64MMOrkestrator.Properties;
 
 namespace M64MMOrkestrator
@@ -20,6 +21,7 @@ namespace M64MMOrkestrator
 
         public TestForm tf;
 
+
         public frmAnarchy frmA;
 
         public void Close(EventArgs e)
@@ -30,9 +32,9 @@ namespace M64MMOrkestrator
         public List<ToolCommand> GetCommands()
         {
             List<ToolCommand> tcl = new List<ToolCommand>();
-            ToolCommand tc = new ToolCommand("Codename Orchestrator");
+            ToolCommand tc = new ToolCommand("Codename KI-O");
             ToolCommand tcAnarchy = new ToolCommand("Anarchy");
-            tc.Summoned += (a, b) => { tf.Show(); };
+            tc.Summoned += (a, b) => { KIOBase._mainForm.Show(); };
             tcAnarchy.Summoned += (a, b) => { frmA.ShowDialog(); };
             tcl.Add(tc);
             tcl.Add(tcAnarchy);
@@ -41,60 +43,75 @@ namespace M64MMOrkestrator
 
         public void Initialize()
         {
-            
-            if (tf == null)
+
+            if (KIOBase.Inited == false)
             {
                 tf = new TestForm();
+                KIOBase.Init();
                 frmA = new frmAnarchy();
             }
         }
 
         public void OnBaseAddressFound()
         {
+            if (Core.CoreEntityAddress > 0)
+            {
+                // Game running and Mario is present
+                KIOBase.Init();
+                KIOBase.Status = KIOStatus.DIRTY;
+                if (KIOBase._mainForm.IsHandleCreated)
+                    KIOBase._mainForm?.Invoke(new MethodInvoker(() => { KIOBase._mainForm.ChangeEnsembleStatus(KIOBase.Status); }));
+            }
+            else
+            {
+                KIOBase.InjectCamHack();
+                KIOBase.Init();
+            }
 
         }
 
         public void OnBaseAddressZero()
         {
-
+            KIOBase.Status = KIOStatus.NOT_READY;
+            if (KIOBase._mainForm.IsHandleCreated)
+                KIOBase._mainForm?.Invoke(new MethodInvoker(() => { KIOBase._mainForm.ChangeEnsembleStatus(KIOBase.Status); }));
         }
 
         public void OnCoreEntAddressChange(uint addr)
         {
-
+            if (addr != 0 && KIOBase.Status == KIOStatus.HOLDON)
+            {
+                KIOBase.InjectCamHack();
+                KIOBase.Status = KIOStatus.READY;
+                if (KIOBase._mainForm.IsHandleCreated)
+                    KIOBase._mainForm?.Invoke(new MethodInvoker(() => { KIOBase._mainForm.ChangeEnsembleStatus(KIOBase.Status); }));
+            }
         }
 
         public void Reset()
         {
-
+            KIOBase.Status = KIOStatus.DIRTY;
         }
 
         public void Update()
         {
-            if (!tf.IsHandleCreated) return;
-            tf?.Invoke(new MethodInvoker(() =>
+            if (KIOBase.Status == KIOStatus.HOLDON && !Core.ValidateAnimDataAddress())
             {
-                tf?.UpdateVals();
+                KIOBase.InjectCamHack();
+                KIOBase.Init();
+            }
 
-                if (KIOBase.Ready)
+            if (KIOBase.Status != KIOStatus.READY)
+            {
+                if (KIOBase.mainTL.Playing)
                 {
-                    if (!KIOBase.tb.IsHandleCreated) return;
-                    KIOBase.tb?.Invoke(new MethodInvoker(() =>
-                        {
-                            KIOBase.tb.UpdateAllLabels();
-                            if (KIOBase.mainTL.Playing)
-                            {
-                                KIOBase.mainTL.TrackheadPosition++;
-                                if (KIOBase.mainTL.TrackheadPosition >= KIOBase.mainTL.Length)
-                                {
-                                    KIOBase.mainTL.Playing = false;
-                                }
-                            }
-                        }
-                         ));
+                    if (KIOBase.mainTL.TrackheadPosition >= KIOBase.mainTL.Length)
+                    {
+                        KIOBase.mainTL.Playing = false;
+                    }
+                    KIOBase.mainTL.TrackheadPosition++;
                 }
-            }));
-
+            }
         }
     }
 }

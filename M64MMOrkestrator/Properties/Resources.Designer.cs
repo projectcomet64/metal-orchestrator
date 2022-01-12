@@ -113,6 +113,16 @@ namespace M64MMOrkestrator.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap behindKf {
+            get {
+                object obj = ResourceManager.GetObject("behindKf", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap defaultAddonIcon {
             get {
                 object obj = ResourceManager.GetObject("defaultAddonIcon", resourceCulture);
@@ -196,6 +206,16 @@ namespace M64MMOrkestrator.Properties {
         internal static System.Drawing.Bitmap framestepback {
             get {
                 object obj = ResourceManager.GetObject("framestepback", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap frontKf {
+            get {
+                object obj = ResourceManager.GetObject("frontKf", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -313,6 +333,26 @@ namespace M64MMOrkestrator.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap posBox {
+            get {
+                object obj = ResourceManager.GetObject("posBox", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rotBox {
+            get {
+                object obj = ResourceManager.GetObject("rotBox", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap sandwich {
             get {
                 object obj = ResourceManager.GetObject("sandwich", resourceCulture);
@@ -346,6 +386,16 @@ namespace M64MMOrkestrator.Properties {
         internal static System.Drawing.Bitmap stop {
             get {
                 object obj = ResourceManager.GetObject("stop", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap zxBox {
+            get {
+                object obj = ResourceManager.GetObject("zxBox", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

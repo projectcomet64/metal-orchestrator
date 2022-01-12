@@ -286,6 +286,9 @@
         szDSyKOhLP8nQ0z/YDWl7EKTYZ+tqN8bAAAAAElFTkSuQmCC
 </value>
   </data>
+  <metadata name="ttButtonInfo.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <metadata name="cmsKeyframeSettings.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>135, 17</value>
   </metadata>

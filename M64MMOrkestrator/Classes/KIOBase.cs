@@ -8,15 +8,26 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using M64MM.Utils;
 using M64MMOrkestrator.KIO;
+using M64MMOrkestrator.Properties;
 
 namespace M64MMOrkestrator
 {
+    public enum KIOStatus
+    {
+        NOT_READY,
+        READY,
+        HOLDON,
+        DIRTY
+    }
+
     public static class KIOBase
     {
 
-        public static frmTimelineB tb;
+        public static FrmMain _mainForm;
 
-        public static bool Ready { get; set; }
+        public static KIOStatus Status { get; set; }
+
+        public static bool Inited { get; set; }
 
         // TODO: Make extension method for Vector3 "FromBytes"
         public static Vector3 CamPos
@@ -117,19 +128,40 @@ namespace M64MMOrkestrator
             Name = "Cam Angle"
         };
 
+        public static void Ensemble()
+        {
+            if (Status == KIOStatus.NOT_READY && Core.BaseAddress == 0)
+            {
+                return;
+            }
+            Status = KIOStatus.HOLDON;
+            if (!_mainForm.IsHandleCreated) return;
+            _mainForm?.Invoke(new MethodInvoker(() => { _mainForm.ChangeEnsembleStatus(Status); }));
+        }
+
+        public static void InjectCamHack()
+        {
+            Core.WriteBytes(Core.BaseAddress + 0x245000 + 0x6316c, Resources._6316c, true);
+            Core.WriteBytes(Core.BaseAddress + 0x245000 + 0x31440, Resources._31440, true);
+            Core.WriteBytes(Core.BaseAddress + 0x245000 + 0x42ce0, Resources._42ce0, true);
+        }
+
         public static void Init()
         {
-            mainTL = new Timeline();
-            mainTL.AddRack("campos", camPosKeyframeRack);
-            mainTL.AddRack("camrot", angleKeyframeRack);
-            camPosKeyframeRack.OnCurrentFrameChanged += () => { CamPos = camPosKeyframeRack.CalculateInterpolation(); };
-            angleKeyframeRack.OnCurrentFrameChanged += () => { CamAngle = angleKeyframeRack.CalculateInterpolation(); };
+            if (!Inited)
+            {
+                mainTL = new Timeline();
+                mainTL.AddRack("campos", camPosKeyframeRack);
+                mainTL.AddRack("camrot", angleKeyframeRack);
+                camPosKeyframeRack.OnCurrentFrameChanged += () => { CamPos = camPosKeyframeRack.CalculateInterpolation(); };
+                angleKeyframeRack.OnCurrentFrameChanged += () => { CamAngle = angleKeyframeRack.CalculateInterpolation(); };
 
-            // keep it cool buddy, wait for the signal
-            mainTL.Synchronize = false;
-            KIOBase.tb = new frmTimelineB();
-
-            Ready = true;
+                // keep it cool buddy, wait for the signal
+                mainTL.Synchronize = false;
+                _mainForm = new FrmMain();
+                Inited = true;
+            }
+            Ensemble();
         }
 
     }

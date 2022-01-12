@@ -30,16 +30,7 @@ namespace M64MMOrkestrator.KIO
 
         public int Length { get; set; }
 
-        public string TimecodeString(int frames = 30)
-        {
-            int frm, second, minute, hour;
-            frm = TrackheadPosition % frames;
-            second = (int)Math.Floor((double)TrackheadPosition / frames);
-            minute = (int)Math.Floor((double)second / 60);
-            hour = (int)Math.Floor((double)minute / 60);
-            return $"{hour:D2}:{minute:D2}:{second:D2}.{frm:D2}";
-
-        }
+        public string TimecodeString(int fps = 30) => FormatTimecodeString(TrackheadPosition, fps);
 
         public Region LoopRegion { get; set; }
 
@@ -62,6 +53,10 @@ namespace M64MMOrkestrator.KIO
 
         public event ChangesCommitted OnChangesCommitted;
 
+        public delegate void ChangesCancelled(object sender, ChangesCancelledEventArgs e);
+
+        public event ChangesCancelled OnChangesCancelled;
+
         public delegate void TrackheadChanged(object sender, TrackheadChangedEventArgs e);
 
         public event TrackheadChanged OnTrackheadChanged;
@@ -78,7 +73,7 @@ namespace M64MMOrkestrator.KIO
             get => _trackHead;
             set
             {
-                _trackHead = value;
+                _trackHead = Math.Max((value >= Length ? Length : value), 0);
                 OnTrackheadChanged?.Invoke(this, new TrackheadChangedEventArgs(value));
                 foreach (KeyframeRack kRack in KeyframeRacks.Values)
                 {
@@ -144,12 +139,15 @@ namespace M64MMOrkestrator.KIO
         public void ClearStagedKeyframes()
         {
             KeyValuePair<string, UncommittedRackChange>[] ucArray = UncommittedRackChanges.Cast<KeyValuePair<string, UncommittedRackChange>>().ToArray();
-
+            
             for (int i = 0; i < ucArray.Length; i++)
             {
-                UncommittedRackChanges[ucArray[i].Key].Dispose();
+                UncommittedRackChanges[ucArray[i].Key]?.Dispose();
                 UncommittedRackChanges[ucArray[i].Key] = null;
             }
+
+            OnChangesCancelled?.Invoke(this, new ChangesCancelledEventArgs());
+
         }
 
         /// <summary>
@@ -177,9 +175,7 @@ namespace M64MMOrkestrator.KIO
 
             ReadOnlyDictionary<string, UncommittedRackChange> forEventChanges =
                 new ReadOnlyDictionary<string, UncommittedRackChange>(UncommittedRackChanges);
-
-            OnChangesCommitted?.Invoke(this, new ChangesCommittedEventArgs(forEventChanges));
-
+            
             for (int i = 0; i < ucArray.Length; i++)
             {
                 if (UncommittedRackChanges[ucArray[i].Key] == null) continue;
@@ -187,6 +183,8 @@ namespace M64MMOrkestrator.KIO
                 KeyframeRacks[ucArray[i].Key].Commit(ucArray[i].Value);
                 UncommittedRackChanges[ucArray[i].Key] = null;
             }
+
+            OnChangesCommitted?.Invoke(this, new ChangesCommittedEventArgs(forEventChanges));
         }
 
         /// <summary>
@@ -198,8 +196,7 @@ namespace M64MMOrkestrator.KIO
 
             ReadOnlyDictionary<string, UncommittedRackChange> forEventChanges =
                 new ReadOnlyDictionary<string, UncommittedRackChange>(UncommittedRackChanges);
-            OnKeyframeBulkChanged?.Invoke(this, new KeyframeBulkChangedEventArgs(forEventChanges, ChangeType.DELETION));
-
+            
             for (int i = 0; i < ucArray.Length; i++)
             {
                 if (UncommittedRackChanges[ucArray[i].Key] == null) continue;
@@ -217,6 +214,9 @@ namespace M64MMOrkestrator.KIO
                 }
                 UncommittedRackChanges[ucArray[i].Key] = null;
             }
+
+            OnKeyframeBulkChanged?.Invoke(this, new KeyframeBulkChangedEventArgs(forEventChanges, ChangeType.DELETION));
+
         }
 
         /// <summary>
@@ -245,6 +245,26 @@ namespace M64MMOrkestrator.KIO
             {
                 Debug.WriteLine($"Exception while trying to update rack with ID {rack}: {ex.Message}");
             }
+        }
+
+        public int GetImmediateKeyframePosition(bool forward)
+        {
+            /*  There's this meme about different programming languages rescuing a princess.
+            *   C#'s parody depicted it as "trying to get the princess in a single LINQ query and then giving up"
+            *   I didn't give up but the former part of that parody still rings true here lol
+            *   
+            *   OK, so, what this does basically is just take all the racks' immediate front (or back) keyframes,
+            *   filter whether they're in front or behind of the trackhead, and select the frame number that
+            *   has the least distance.
+            */
+            int[] _keys = KeyframeRacks.Select(x =>
+                    (forward ? x.Value.ImmediateForwardKeyframe?.Position : x.Value.ImmediateBehindKeyframe?.Position))
+                .Where(x => x != null && (forward ? x > TrackheadPosition : x < TrackheadPosition)).Cast<int>().Distinct()
+                .OrderBy(x => x).ToArray();
+
+            if (!_keys.Any()) return TrackheadPosition;
+
+            return (int)(forward ? _keys.First() : _keys.Last());
         }
 
         /// <summary>
@@ -310,6 +330,23 @@ namespace M64MMOrkestrator.KIO
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Formats a frame number into a Timecode string.
+        /// </summary>
+        /// <param name="position">The frame's number</param>
+        /// <param name="fps">The base FPS</param>
+        /// <returns>A Timecode string formatted as: HH:mm:ss.ff</returns>
+        public static string FormatTimecodeString(int position, int fps = 30)
+        {
+            int frm, second, minute, hour;
+            frm = position % fps;
+            second = (int)Math.Floor((double)position / fps);
+            minute = (int)Math.Floor((double)second / 60);
+            hour = (int)Math.Floor((double)minute / 60);
+            return $"{hour:D2}:{minute:D2}:{second:D2}.{frm:D2}";
+
         }
     }
 }

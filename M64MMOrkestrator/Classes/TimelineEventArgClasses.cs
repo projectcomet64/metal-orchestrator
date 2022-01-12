@@ -48,6 +48,14 @@ namespace M64MMOrkestrator.KIO
     }
 
     /// <summary>
+    /// Used when UncommittedChanges in a Timeline are cancelled
+    /// </summary>
+    public class ChangesCancelledEventArgs : EventArgs
+    {
+
+    }
+
+    /// <summary>
     /// Used when UncommittedChanges in a Timeline are committed
     /// </summary>
     public class ChangesCommittedEventArgs : EventArgs

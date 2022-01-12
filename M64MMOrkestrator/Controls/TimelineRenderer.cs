@@ -49,6 +49,7 @@ namespace M64MMOrkestrator.Controls
             _tlBs.DataSource = _tl.KeyframeRacks;
             InitializeComponent();
 
+            tsmDiscardCommits.Click += (a, b) => _tl.ClearStagedKeyframes();
             tsmLinear.Click += (a, b) => _tl.SetSelectedKeyframeInterpolation(KeyframeType.Linear);
             tsmSlow.Click += (a, b) => _tl.SetSelectedKeyframeInterpolation(KeyframeType.Slow);
             tsmFast.Click += (a, b) => _tl.SetSelectedKeyframeInterpolation(KeyframeType.Fast);
@@ -72,6 +73,10 @@ namespace M64MMOrkestrator.Controls
             scRackTitles.Panel2.AutoScrollPosition = new Point(0, 0);
             scRackTitles.Panel2.VerticalScroll.Maximum = 999;
             _tl.OnTrackheadChanged += (tl, e) => Redraw();
+            _tl.OnChangesCancelled += (tl, e) => Redraw();
+            _tl.OnChangesCommitted += (tl, e) => Redraw();
+            _tl.OnKeyframeBulkChanged += (tl, e) => Redraw();
+            _tl.OnKeyframeChanged += (tl, e) => Redraw();
             trackHeadPen.Width = 1;
             trackBodyPen.Width = 2;
             Redraw();
@@ -253,6 +258,57 @@ namespace M64MMOrkestrator.Controls
         {
             miInterpolation.Enabled = _tl.StagedKeyframesPresent || _tl.SelectedKeyframes.Count > 0;
                 cmsKeyframeSettings.Show((Control)sender, (int)((Control)sender).Bounds.Width / 2, (int)((Control)sender).Bounds.Height / 2);
+        }
+
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
+            _tl.Playing = !_tl.Playing;
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            _tl.Playing = false;
+            _tl.TrackheadPosition = 0;
+        }
+
+        private void btnStepback_Click(object sender, EventArgs e)
+        {
+            _tl.TrackheadPosition--;
+        }
+
+        private void btnAdvance_Click(object sender, EventArgs e)
+        {
+            _tl.TrackheadPosition++;
+        }
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            _tl.TrackheadPosition = 0;
+        }
+
+        private void btnEnd_Click(object sender, EventArgs e)
+        {
+            _tl.TrackheadPosition = _tl.Length;
+        }
+
+        private void btnBackKf_Click(object sender, EventArgs e)
+        {
+            _tl.TrackheadPosition = _tl.GetImmediateKeyframePosition(false);
+        }
+
+        private void btnFrontKf_Click(object sender, EventArgs e)
+        {
+            _tl.TrackheadPosition = _tl.GetImmediateKeyframePosition(true);
+        }
+
+        private void cbSync_CheckedChanged(object sender, EventArgs e)
+        {
+            _tl.Synchronize = cbSync.Checked;
+        }
+
+        private void nudLength_ValueChanged(object sender, EventArgs e)
+        {
+            _tl.Length = (int)((NumericUpDown)sender).Value;
         }
     }
 }
