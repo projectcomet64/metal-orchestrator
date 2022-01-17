@@ -109,10 +109,10 @@ namespace M64MMOrkestrator
 
         public static XYAngle CamAngle
         {
-            get => XYAngle.FromVectorPair(CamPos, CamLookAtPos);
+            get => _camAngle;
             set
             {
-
+                _camAngle = value;
                 Vector3 lookat = value.LookAtFromPosition(CamPos);
                 CamLookAtPos = lookat;
             }
@@ -141,6 +141,8 @@ namespace M64MMOrkestrator
 
         public static void InjectCamHack()
         {
+            // Thank you, Peter Fedak.
+            Core.WriteBytes(Core.BaseAddress + 0x3E001C, new byte[]{0xFF, 00}, true);
             Core.WriteBytes(Core.BaseAddress + 0x245000 + 0x6316c, Resources._6316c, true);
             Core.WriteBytes(Core.BaseAddress + 0x245000 + 0x31440, Resources._31440, true);
             Core.WriteBytes(Core.BaseAddress + 0x245000 + 0x42ce0, Resources._42ce0, true);

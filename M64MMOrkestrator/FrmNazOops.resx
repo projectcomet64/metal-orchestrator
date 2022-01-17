@@ -117,26 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="msMainMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <metadata name="ttInfo.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>276, 21</value>
-  </metadata>
-  <data name="label3.Text" xml:space="preserve">
-    <value>Ever used Toad's Tool 64/Quad64? These controls should be familiar, except for the ROT box.
+  <data name="label2.Text" xml:space="preserve">
+    <value>See, the thing is: I had made a compromise when I said I'd work on this instead of another project when my PC was stolen...
 
-The ROT box changes cam rotation. Works like C-Up mode, drag it the same way as the POS box.
+I told you guys that I'd ship the first version with less features that would consume more time to implement compared to simpler versions that just work.
 
-Important: like with the Dolphin camera hack, Mario's "forward" direction isn't aligned with the camera, but we'll try to make it so. Be careful when moving in Super Hard Freeze!
+This is true for using the Timeline with the mouse, but not true for saving/loading... you still can't do that. It's probably just as hard as building the Timeline itself and all its components for the first time due to the extensibleness and futureproofing of the framework itself. I need extra time to work on a feasible solution.
 
-Hover over the buttons to get more information.
+I hope to get these things working in a future version!
 </value>
   </data>
-  <metadata name="cmsDirection.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>153, 21</value>
-  </metadata>
-  <metadata name="ttInfo.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>276, 21</value>
-  </metadata>
 </root>

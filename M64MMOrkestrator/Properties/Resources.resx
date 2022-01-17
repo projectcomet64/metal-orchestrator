@@ -118,8 +118,14 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="nudgeKfLeft" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\nudgeKfLeft.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="stop" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\stop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="zxBox" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\zxBox.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="fSmooth" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fSmooth.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -139,11 +145,17 @@
   <data name="MACBG" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MACBG2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="nudgeKfRight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\nudgeKfRight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="frameadvance" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\frameadvance.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="sandwich" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\sandwich.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="end" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\end.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="spamton" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\spamton.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -154,26 +166,23 @@
   <data name="fSlow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fSlow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="nudgeKfLeft" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\nudgeKfLeft.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="frontKf" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\frontKf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="defaultAddonIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\defaultAddonIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="end" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\end.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="selectKeyframes" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\selectKeyframes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="fShake" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fShake.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="frontKf" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\frontKf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="fLinear" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fLinear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="_6316c" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\6316c;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="behindKf" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\behindKf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="addKf" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\addKf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -187,20 +196,20 @@
   <data name="_42ce0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\42ce0;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="selectKeyframes" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\selectKeyframes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="posBox" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\posBox.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="fHold" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fHold.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="behindKf" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\behindKf.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="fFast" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fFast.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="nudgeKfRight" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\nudgeKfRight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="rotBox" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\rotBox.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_6316c" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\6316c;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="fSelected" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fSelected.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -211,13 +220,13 @@
   <data name="fSharp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fSharp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="posBox" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\posBox.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="nazoops" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\nazoops.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="rotBox" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\rotBox.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="orchestrator_512" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\orchestrator_512.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="zxBox" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\zxBox.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="orchestrator_64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\orchestrator_64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

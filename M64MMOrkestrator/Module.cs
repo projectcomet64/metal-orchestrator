@@ -13,16 +13,14 @@ namespace M64MMOrkestrator
 {
     public class Module : IModule
     {
-        public string SafeName => "M64MM Action!";
 
-        public string Description => "The most advanced Camera control, overriding the original game's";
+        private const long CamStatBase = 0x3E001c;
 
-        public Image AddonIcon => Resources.defaultAddonIcon;
+        public string SafeName => "METAL Orchestrator";
 
-        public TestForm tf;
+        public string Description => "SUPER!! Advanced Camera Control. Full name is METAL: Kikai Orchestrator";
 
-
-        public frmAnarchy frmA;
+        public Image AddonIcon => Resources.orchestrator_64;
 
         public void Close(EventArgs e)
         {
@@ -33,11 +31,8 @@ namespace M64MMOrkestrator
         {
             List<ToolCommand> tcl = new List<ToolCommand>();
             ToolCommand tc = new ToolCommand("Codename KI-O");
-            ToolCommand tcAnarchy = new ToolCommand("Anarchy");
             tc.Summoned += (a, b) => { KIOBase._mainForm.Show(); };
-            tcAnarchy.Summoned += (a, b) => { frmA.ShowDialog(); };
             tcl.Add(tc);
-            tcl.Add(tcAnarchy);
             return tcl;
         }
 
@@ -46,9 +41,7 @@ namespace M64MMOrkestrator
 
             if (KIOBase.Inited == false)
             {
-                tf = new TestForm();
                 KIOBase.Init();
-                frmA = new frmAnarchy();
             }
         }
 
@@ -56,9 +49,10 @@ namespace M64MMOrkestrator
         {
             if (Core.CoreEntityAddress > 0)
             {
+                byte[] statBytes = Core.ReadBytes(Core.BaseAddress + CamStatBase, 2);
                 // Game running and Mario is present
                 KIOBase.Init();
-                KIOBase.Status = KIOStatus.DIRTY;
+                KIOBase.Status = statBytes[0] != 0xFF ? KIOStatus.DIRTY : KIOStatus.READY;
                 if (KIOBase._mainForm.IsHandleCreated)
                     KIOBase._mainForm?.Invoke(new MethodInvoker(() => { KIOBase._mainForm.ChangeEnsembleStatus(KIOBase.Status); }));
             }
@@ -79,6 +73,13 @@ namespace M64MMOrkestrator
 
         public void OnCoreEntAddressChange(uint addr)
         {
+
+            byte[] statBytes = Core.ReadBytes(Core.BaseAddress + CamStatBase, 2);
+            // Level changed, KI-O flag not present (also savestate)
+            KIOBase.Status = statBytes[0] != 0xFF ? KIOStatus.DIRTY : KIOStatus.READY;
+            if (KIOBase._mainForm.IsHandleCreated)
+                KIOBase._mainForm?.Invoke(new MethodInvoker(() => { KIOBase._mainForm.ChangeEnsembleStatus(KIOBase.Status); }));
+
             if (addr != 0 && KIOBase.Status == KIOStatus.HOLDON)
             {
                 KIOBase.InjectCamHack();
@@ -95,22 +96,32 @@ namespace M64MMOrkestrator
 
         public void Update()
         {
+            if (KIOBase.Status == KIOStatus.READY)
+            {
+                byte[] statBytes = Core.ReadBytes(Core.BaseAddress + CamStatBase, 2);
+                if (statBytes[0] != 0xFF)
+                {
+                    KIOBase.Status = KIOStatus.DIRTY;
+                }
+            }
+
+
+
             if (KIOBase.Status == KIOStatus.HOLDON && !Core.ValidateAnimDataAddress())
             {
                 KIOBase.InjectCamHack();
                 KIOBase.Init();
             }
 
-            if (KIOBase.Status != KIOStatus.READY)
+            if (KIOBase.Status == KIOStatus.READY)
             {
-                if (KIOBase.mainTL.Playing)
+                if (!KIOBase.mainTL.Playing) return;
+
+                if (KIOBase.mainTL.TrackheadPosition >= KIOBase.mainTL.Length)
                 {
-                    if (KIOBase.mainTL.TrackheadPosition >= KIOBase.mainTL.Length)
-                    {
-                        KIOBase.mainTL.Playing = false;
-                    }
-                    KIOBase.mainTL.TrackheadPosition++;
+                    KIOBase.mainTL.Playing = false;
                 }
+                KIOBase.mainTL.TrackheadPosition++;
             }
         }
     }

@@ -37,6 +37,9 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -58,6 +61,7 @@
   <ItemGroup>
     <Compile Include="Classes\Keyframe.cs" />
     <Compile Include="Classes\KeyframeRack.cs" />
+    <Compile Include="Classes\KIOTypesBinder.cs" />
     <Compile Include="Classes\Marker.cs" />
     <Compile Include="Classes\Region.cs" />
     <Compile Include="Classes\Timeline.cs" />
@@ -74,6 +78,12 @@
       <DependentUpon>TimelineRenderer.cs</DependentUpon>
     </Compile>
     <Compile Include="Extensions\MathExtensions.cs" />
+    <Compile Include="frmAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAbout.Designer.cs">
+      <DependentUpon>frmAbout.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmAnarchy.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,6 +102,12 @@
     </Compile>
     <Compile Include="FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmNazOops.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmNazOops.Designer.cs">
+      <DependentUpon>FrmNazOops.cs</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IKeyframe.cs" />
     <Compile Include="Module.cs" />
@@ -122,6 +138,9 @@
     <EmbeddedResource Include="Controls\TimelineRenderer.resx">
       <DependentUpon>TimelineRenderer.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmAbout.resx">
+      <DependentUpon>frmAbout.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmAnarchy.resx">
       <DependentUpon>frmAnarchy.cs</DependentUpon>
     </EmbeddedResource>
@@ -130,6 +149,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmNazOops.resx">
+      <DependentUpon>FrmNazOops.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -143,6 +165,7 @@
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
+    <None Include="packages.config" />
     <None Include="Resources\31440" />
     <None Include="Resources\42ce0" />
     <None Include="Resources\6316c" />
@@ -243,6 +266,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\zxBox.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\nazoops.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\orchestrator_512.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\orchestrator_64.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

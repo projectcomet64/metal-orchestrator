@@ -303,6 +303,16 @@ namespace M64MMOrkestrator.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap nazoops {
+            get {
+                object obj = ResourceManager.GetObject("nazoops", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap nudgeKfLeft {
             get {
                 object obj = ResourceManager.GetObject("nudgeKfLeft", resourceCulture);
@@ -316,6 +326,26 @@ namespace M64MMOrkestrator.Properties {
         internal static System.Drawing.Bitmap nudgeKfRight {
             get {
                 object obj = ResourceManager.GetObject("nudgeKfRight", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap orchestrator_512 {
+            get {
+                object obj = ResourceManager.GetObject("orchestrator_512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap orchestrator_64 {
+            get {
+                object obj = ResourceManager.GetObject("orchestrator_64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

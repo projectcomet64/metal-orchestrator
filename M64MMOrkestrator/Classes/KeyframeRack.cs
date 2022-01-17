@@ -9,14 +9,16 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using M64MMOrkestrator.Classes;
 using M64MMOrkestrator.Extensions;
+using Newtonsoft.Json;
 
 namespace M64MMOrkestrator.KIO
 {
 
     public abstract class KeyframeRack
     {
+        [JsonProperty("name")]
         public string Name { get; set; }
-
+        [JsonIgnore]
         public abstract List<Keyframe> OrderedGenericList { get; }
 
         /// <summary>
@@ -35,7 +37,9 @@ namespace M64MMOrkestrator.KIO
         /// <summary>
         /// Returns the keyframe behind the current reference frame.
         /// </summary>
+        [JsonIgnore]
         public abstract Keyframe ImmediateBehindKeyframe { get;}
+        [JsonIgnore]
         public abstract Keyframe ImmediateForwardKeyframe { get;}
 
         /// <summary>
@@ -45,6 +49,7 @@ namespace M64MMOrkestrator.KIO
 
         internal int _currentFrame;
 
+        [JsonIgnore]
         public int CurrentFrame
         {
             get => _currentFrame;
@@ -59,6 +64,7 @@ namespace M64MMOrkestrator.KIO
         /// <summary>
         /// Used by Timeline when Timeline Sync is not enabled
         /// </summary>
+        [JsonIgnore]
         public int ReferenceFrame
         {
             get => _currentFrame;
@@ -90,7 +96,17 @@ namespace M64MMOrkestrator.KIO
 
         public abstract void Clear();
 
+        public abstract void Wipe();
+
         public abstract bool Remove(Keyframe item);
+
+        /// <summary>
+        /// Takes all the Keyframes from another Keyframerack and then clears the other rack.
+        /// </summary>
+        /// <param name="snatched">The victim KeyframeRack</param>
+        public abstract void Snatch(KeyframeRack snatched);
+
+        public abstract Type UnderlyingType { get; }
 
     }
 
@@ -99,15 +115,20 @@ namespace M64MMOrkestrator.KIO
     /// <para>You shouldn't use this class's derivatives on their own either. Add them to a Timeline.</para>
     /// </summary>
     /// <typeparam name="TKeyframe">The underlying type for the Keyframes.</typeparam>
+    [JsonObject]
     public abstract class KeyframeRack<TKeyframe> : KeyframeRack, IList<Keyframe<TKeyframe>> where TKeyframe : new()
     {
-        protected List<Keyframe<TKeyframe>> elements;
+        [JsonProperty("list")]
+        protected List<Keyframe<TKeyframe>> elements = new List<Keyframe<TKeyframe>>();
 
+        [JsonIgnore]
+        public override Type UnderlyingType => typeof(TKeyframe);
+        [JsonIgnore]
+        public readonly Keyframe<TKeyframe> basicKeyframe;
 
-        protected Keyframe<TKeyframe> basicKeyframe;
-
+        [JsonIgnore]
         public List<Keyframe<TKeyframe>> OrderedKeyframes => elements.OrderBy(k => k.Position).ToList();
-
+        [JsonIgnore]
         public override List<Keyframe> OrderedGenericList => OrderedKeyframes.Cast<Keyframe>().ToList();
 
         /// <summary>
@@ -144,7 +165,16 @@ namespace M64MMOrkestrator.KIO
         public KeyframeRack(Func<TKeyframe> valgetter) : this()
         {
             valueGetter = valgetter;
+            basicKeyframe = new Keyframe<TKeyframe>(new TKeyframe());
             AddCurrentStateAtPosition(0);
+        }
+
+        protected KeyframeRack(List<Keyframe<TKeyframe>> list, string name)
+        {
+            elements.Clear();
+            basicKeyframe = new Keyframe<TKeyframe>(new TKeyframe());
+            elements.AddRange(list.Cast<Keyframe<TKeyframe>>());
+            Name = name;
         }
 
         public int FarthestKeyframePosition()
@@ -186,6 +216,20 @@ namespace M64MMOrkestrator.KIO
         public int TrackHeadDistanceToKeyframe(Keyframe kf)
         {
             return (int)Math.Abs(ReferenceFrame - kf.Position);
+        }
+
+        /// <summary>
+        /// Wipes itself, takes all the Keyframes from another Keyframerack of (hopefully) the same kind and then clears the other rack, hopefully making GC do its thing.
+        /// </summary>
+        /// <param name="snatched">The victim KeyframeRack</param>
+        public override void Snatch(KeyframeRack snatched)
+        {
+            Clear();
+            foreach (Keyframe<TKeyframe> key in ((KeyframeRack<TKeyframe>)snatched).OrderedKeyframes)
+            {
+                Add(key);
+            }
+            snatched.Clear();
         }
 
         public override void UpdateImmediates()
@@ -322,11 +366,13 @@ namespace M64MMOrkestrator.KIO
             }
         }
 
-
+        [JsonIgnore]
         public bool IsReadOnly => false;
-
+        
+        [JsonIgnore]
         public bool IsFixedSize => false;
 
+        [JsonIgnore]
         public int Count => elements.Count();
 
         public void Add(Keyframe<TKeyframe> item)
@@ -343,9 +389,20 @@ namespace M64MMOrkestrator.KIO
             Add((Keyframe<TKeyframe>)item);
         }
 
+        /// <summary>
+        /// Clears the internal list. Should only be used when this is an ephemereal KeyframeRack.
+        /// </summary>
         public override void Clear()
         {
             elements.Clear();
+        }
+
+        /// <summary>
+        /// Clears the internal list and also adds a first keyframe.
+        /// </summary>
+        public override void Wipe()
+        {
+            Clear();
             AddCurrentStateAtPosition(0);
         }
 
@@ -418,9 +475,14 @@ namespace M64MMOrkestrator.KIO
         }
     }
 
-
+    [JsonObject]
     public class Vector3KeyframeRack : KeyframeRack<Vector3>
     {
+        [JsonConstructor]
+        protected Vector3KeyframeRack(List<Keyframe<Vector3>> list, string name) : base(list, name)
+        {
+            
+        }
 
         public Vector3KeyframeRack(Keyframe<Vector3> initialKeyframe, Func<Vector3> valgetter) : base(initialKeyframe, valgetter) { }
 
@@ -443,9 +505,14 @@ namespace M64MMOrkestrator.KIO
         }
     }
 
+    [JsonObject]
     public class XYAngleKeyframeRack : KeyframeRack<XYAngle>
     {
+        [JsonConstructor]
+        protected XYAngleKeyframeRack(List<Keyframe<XYAngle>> list, string name) : base(list, name)
+        {
 
+        }
         public XYAngleKeyframeRack(Keyframe<XYAngle> initialKeyframe, Func<XYAngle> valgetter) : base(initialKeyframe, valgetter) { }
 
         public XYAngleKeyframeRack(Func<XYAngle> valgetter) : base(valgetter) { }

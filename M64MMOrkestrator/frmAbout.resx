@@ -117,26 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="msMainMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <metadata name="ttInfo.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>276, 21</value>
-  </metadata>
   <data name="label3.Text" xml:space="preserve">
-    <value>Ever used Toad's Tool 64/Quad64? These controls should be familiar, except for the ROT box.
+    <value>Special thanks:
+Peter Fedak - for allowing me to use the freecam hack
 
-The ROT box changes cam rotation. Works like C-Up mode, drag it the same way as the POS box.
+pannenkoek2012, shyguyhex, NovaQbic
+A corvid, somewhere.
 
-Important: like with the Dolphin camera hack, Mario's "forward" direction isn't aligned with the camera, but we'll try to make it so. Be careful when moving in Super Hard Freeze!
+all my Patrons: MrGameAndSketch, Mine, PonderMan, Waro
 
-Hover over the buttons to get more information.
-</value>
+Trivia: METAL Orchestrator's original name is KIKAI Orchestrator, KIKAI being METAL 2. So you can call Orchestrator the following ways:
+- KI-O (Preferred)
+- MO (Preferred)
+- MOrk
+- MOrch
+- MOr</value>
   </data>
-  <metadata name="cmsDirection.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>153, 21</value>
-  </metadata>
-  <metadata name="ttInfo.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>276, 21</value>
-  </metadata>
 </root>

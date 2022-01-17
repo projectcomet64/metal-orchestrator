@@ -66,7 +66,6 @@ namespace M64MMOrkestrator.Controls
             tbZoom.Minimum = Math.Min(_tl.Length / pnlRacks.Width, 1);
 
             frameSizeInPixels = tbZoom.Value;
-            pnlRacks.Width = _tl.Length * frameSizeInPixels;
             lbRackTitles.Height = lbRackTitles.ItemHeight * (lbRackTitles.Items.Count+1);
             pnlRacks.Height = scRackTitles.Panel1.Height + lbRackTitles.Height + 4;
             
@@ -77,6 +76,10 @@ namespace M64MMOrkestrator.Controls
             _tl.OnChangesCommitted += (tl, e) => Redraw();
             _tl.OnKeyframeBulkChanged += (tl, e) => Redraw();
             _tl.OnKeyframeChanged += (tl, e) => Redraw();
+            _tl.OnTimelineLoaded += (tl, e) => Redraw();
+            _tl.Length = (int)nudLength.Value;
+            pnlRacks.Width = _tl.Length * frameSizeInPixels;
+
             trackHeadPen.Width = 1;
             trackBodyPen.Width = 2;
             Redraw();
@@ -84,8 +87,12 @@ namespace M64MMOrkestrator.Controls
 
         public void Redraw()
         {
-            lbTimecode.Text = _tl.TimecodeString();
-            pnlRacks.Refresh();
+            if (!IsHandleCreated) return;
+            BeginInvoke(new MethodInvoker(() => {
+                lbTimecode.Text = _tl.TimecodeString();
+                pnlRacks.Refresh();
+            }));
+            
         }
 
         private void pnlRacks_Paint(object sender, PaintEventArgs e)
@@ -309,6 +316,18 @@ namespace M64MMOrkestrator.Controls
         private void nudLength_ValueChanged(object sender, EventArgs e)
         {
             _tl.Length = (int)((NumericUpDown)sender).Value;
+        }
+
+        private void whyCantIControlTheTimelineWithTheMouseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmNazOops oops = new FrmNazOops();
+            oops.ShowDialog(this);
+        }
+
+        private void pnlRacks_MouseClick(object sender, MouseEventArgs e)
+        {
+            Control me = (Control) sender;
+            cmsWhy.Show(me.PointToScreen(new Point(e.X, e.Y)));
         }
     }
 }

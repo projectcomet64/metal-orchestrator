@@ -3,12 +3,20 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
+using System.Windows.Input;
 using M64MMOrkestrator.Classes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace M64MMOrkestrator.KIO
 {
@@ -60,6 +68,10 @@ namespace M64MMOrkestrator.KIO
         public delegate void TrackheadChanged(object sender, TrackheadChangedEventArgs e);
 
         public event TrackheadChanged OnTrackheadChanged;
+
+        public delegate void TimelineLoaded(object sender, EventArgs e);
+
+        public event TimelineLoaded OnTimelineLoaded;
 
         public List<string> SelectedRacks { get; set; } = new List<string>();
         public string ActiveRack { get; set; }
@@ -116,6 +128,54 @@ namespace M64MMOrkestrator.KIO
                 }
             }
 
+        }
+
+        public string SerializeToJson()
+        {
+            
+            return JsonConvert.SerializeObject(KeyframeRacks, Formatting.None, new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                PreserveReferencesHandling = PreserveReferencesHandling.All,
+                TypeNameAssemblyFormatHandling =  TypeNameAssemblyFormatHandling.Simple,
+                SerializationBinder = new KIOTypesBinder()
+        });
+        }
+
+        /// <summary>
+        /// Deserializes a JSON to Timeline.
+        /// </summary>
+        /// <param name="jsonIn">JSON string.</param>
+        /// <returns>True if success, false if failure.</returns>
+        public bool DeserializeFromJson(string jsonIn)
+        {
+            Dictionary<string, KeyframeRack> jE = JsonConvert.DeserializeObject<Dictionary<string, KeyframeRack>>(jsonIn, new JsonSerializerSettings()
+           {
+               TypeNameHandling = TypeNameHandling.Auto,
+               TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+               SerializationBinder = new KIOTypesBinder()
+           });
+
+           if (jE.Count == 0) return false;
+           foreach (KeyValuePair<string, KeyframeRack> kp in jE)
+           {
+               if (!KeyframeRacks.ContainsKey(kp.Key)) continue;
+               KeyframeRacks[kp.Key].Snatch(kp.Value);
+           }
+           OnTimelineLoaded?.Invoke(this, EventArgs.Empty);
+           return true;
+        }
+
+        /// <summary>
+        /// nuke. nuke all.
+        /// </summary>
+        public void WipeEverything()
+        {
+            foreach (KeyValuePair<string, KeyframeRack> kRack in KeyframeRacks)
+            {
+                kRack.Value.Wipe();
+            }
+            OnTimelineLoaded?.Invoke();
         }
 
         /// <summary>

@@ -37,6 +37,10 @@ namespace M64MMOrkestrator.Controls
             this.lbTimecode = new System.Windows.Forms.Label();
             this.lbRackTitles = new System.Windows.Forms.ListBox();
             this.pnlRacks = new System.Windows.Forms.Panel();
+            this.cbSync = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.nudLength = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
             this.tbZoom = new System.Windows.Forms.TrackBar();
             this.ttButtonInfo = new System.Windows.Forms.ToolTip(this.components);
             this.cmsKeyframeSettings = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -51,10 +55,13 @@ namespace M64MMOrkestrator.Controls
             this.tsmBezier = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmDiscardCommits = new System.Windows.Forms.ToolStripMenuItem();
-            this.label1 = new System.Windows.Forms.Label();
+            this.cmsWhy = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.whyCantIControlTheTimelineWithTheMouseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnEnd = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
+            this.btnFrontKf = new System.Windows.Forms.Button();
             this.btnAdvance = new System.Windows.Forms.Button();
+            this.btnBackKf = new System.Windows.Forms.Button();
             this.btnStepback = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
@@ -64,11 +71,6 @@ namespace M64MMOrkestrator.Controls
             this.btnSelectKf = new System.Windows.Forms.Button();
             this.btnRemoveKf = new System.Windows.Forms.Button();
             this.btnAddKf = new System.Windows.Forms.Button();
-            this.btnBackKf = new System.Windows.Forms.Button();
-            this.btnFrontKf = new System.Windows.Forms.Button();
-            this.nudLength = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
-            this.cbSync = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.scControls)).BeginInit();
             this.scControls.Panel1.SuspendLayout();
             this.scControls.Panel2.SuspendLayout();
@@ -81,9 +83,10 @@ namespace M64MMOrkestrator.Controls
             this.scRackTitles.Panel1.SuspendLayout();
             this.scRackTitles.Panel2.SuspendLayout();
             this.scRackTitles.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudLength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbZoom)).BeginInit();
             this.cmsKeyframeSettings.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudLength)).BeginInit();
+            this.cmsWhy.SuspendLayout();
             this.SuspendLayout();
             // 
             // scControls
@@ -124,7 +127,7 @@ namespace M64MMOrkestrator.Controls
             this.scControls.Panel2.Controls.Add(this.tbZoom);
             this.scControls.Panel2MinSize = 32;
             this.scControls.Size = new System.Drawing.Size(971, 523);
-            this.scControls.SplitterDistance = 480;
+            this.scControls.SplitterDistance = 483;
             this.scControls.SplitterWidth = 1;
             this.scControls.TabIndex = 0;
             // 
@@ -149,7 +152,7 @@ namespace M64MMOrkestrator.Controls
             this.scTimelineSplit.Panel2.Controls.Add(this.pnlRacks);
             this.scTimelineSplit.Panel2.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scTimelineSplit_Panel2_Scroll);
             this.scTimelineSplit.Panel2MinSize = 220;
-            this.scTimelineSplit.Size = new System.Drawing.Size(971, 480);
+            this.scTimelineSplit.Size = new System.Drawing.Size(971, 483);
             this.scTimelineSplit.SplitterDistance = 200;
             this.scTimelineSplit.SplitterWidth = 2;
             this.scTimelineSplit.TabIndex = 1;
@@ -174,7 +177,7 @@ namespace M64MMOrkestrator.Controls
             // 
             this.scRackTitles.Panel2.Controls.Add(this.lbRackTitles);
             this.scRackTitles.Panel2.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scRackTitles_Panel2_Scroll);
-            this.scRackTitles.Size = new System.Drawing.Size(198, 478);
+            this.scRackTitles.Size = new System.Drawing.Size(198, 481);
             this.scRackTitles.SplitterDistance = 31;
             this.scRackTitles.SplitterWidth = 1;
             this.scRackTitles.TabIndex = 1;
@@ -215,6 +218,57 @@ namespace M64MMOrkestrator.Controls
             this.pnlRacks.Size = new System.Drawing.Size(284, 470);
             this.pnlRacks.TabIndex = 0;
             this.pnlRacks.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlRacks_Paint);
+            this.pnlRacks.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pnlRacks_MouseClick);
+            // 
+            // cbSync
+            // 
+            this.cbSync.AutoSize = true;
+            this.cbSync.Location = new System.Drawing.Point(220, 13);
+            this.cbSync.Name = "cbSync";
+            this.cbSync.Size = new System.Drawing.Size(84, 17);
+            this.cbSync.TabIndex = 8;
+            this.cbSync.Text = "Synchronize";
+            this.cbSync.UseVisualStyleBackColor = true;
+            this.cbSync.CheckedChanged += new System.EventHandler(this.cbSync_CheckedChanged);
+            // 
+            // label2
+            // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(314, 15);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(118, 13);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "Timeline length (frames)";
+            // 
+            // nudLength
+            // 
+            this.nudLength.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.nudLength.Location = new System.Drawing.Point(438, 12);
+            this.nudLength.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudLength.Name = "nudLength";
+            this.nudLength.Size = new System.Drawing.Size(65, 20);
+            this.nudLength.TabIndex = 9;
+            this.nudLength.Value = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.nudLength.ValueChanged += new System.EventHandler(this.nudLength_ValueChanged);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(797, 14);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(34, 13);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Zoom";
             // 
             // tbZoom
             // 
@@ -310,15 +364,19 @@ namespace M64MMOrkestrator.Controls
             this.tsmDiscardCommits.Size = new System.Drawing.Size(207, 22);
             this.tsmDiscardCommits.Text = "Discard pending changes";
             // 
-            // label1
+            // cmsWhy
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(797, 14);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(34, 13);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Zoom";
+            this.cmsWhy.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.whyCantIControlTheTimelineWithTheMouseToolStripMenuItem});
+            this.cmsWhy.Name = "cmsWhy";
+            this.cmsWhy.Size = new System.Drawing.Size(333, 26);
+            // 
+            // whyCantIControlTheTimelineWithTheMouseToolStripMenuItem
+            // 
+            this.whyCantIControlTheTimelineWithTheMouseToolStripMenuItem.Name = "whyCantIControlTheTimelineWithTheMouseToolStripMenuItem";
+            this.whyCantIControlTheTimelineWithTheMouseToolStripMenuItem.Size = new System.Drawing.Size(332, 22);
+            this.whyCantIControlTheTimelineWithTheMouseToolStripMenuItem.Text = "Why can\'t I control the Timeline with the mouse?";
+            this.whyCantIControlTheTimelineWithTheMouseToolStripMenuItem.Click += new System.EventHandler(this.whyCantIControlTheTimelineWithTheMouseToolStripMenuItem_Click);
             // 
             // btnEnd
             // 
@@ -346,6 +404,19 @@ namespace M64MMOrkestrator.Controls
             this.btnPlay.UseVisualStyleBackColor = true;
             this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
             // 
+            // btnFrontKf
+            // 
+            this.btnFrontKf.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnFrontKf.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnFrontKf.Image = global::M64MMOrkestrator.Properties.Resources.frontKf;
+            this.btnFrontKf.Location = new System.Drawing.Point(545, 5);
+            this.btnFrontKf.Name = "btnFrontKf";
+            this.btnFrontKf.Size = new System.Drawing.Size(30, 30);
+            this.btnFrontKf.TabIndex = 11;
+            this.ttButtonInfo.SetToolTip(this.btnFrontKf, "Next Keyframe");
+            this.btnFrontKf.UseVisualStyleBackColor = true;
+            this.btnFrontKf.Click += new System.EventHandler(this.btnFrontKf_Click);
+            // 
             // btnAdvance
             // 
             this.btnAdvance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -358,6 +429,19 @@ namespace M64MMOrkestrator.Controls
             this.ttButtonInfo.SetToolTip(this.btnAdvance, "Advance Frame");
             this.btnAdvance.UseVisualStyleBackColor = true;
             this.btnAdvance.Click += new System.EventHandler(this.btnAdvance_Click);
+            // 
+            // btnBackKf
+            // 
+            this.btnBackKf.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnBackKf.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnBackKf.Image = global::M64MMOrkestrator.Properties.Resources.behindKf;
+            this.btnBackKf.Location = new System.Drawing.Point(509, 5);
+            this.btnBackKf.Name = "btnBackKf";
+            this.btnBackKf.Size = new System.Drawing.Size(30, 30);
+            this.btnBackKf.TabIndex = 10;
+            this.ttButtonInfo.SetToolTip(this.btnBackKf, "Previous Keyframe");
+            this.btnBackKf.UseVisualStyleBackColor = true;
+            this.btnBackKf.Click += new System.EventHandler(this.btnBackKf_Click);
             // 
             // btnStepback
             // 
@@ -479,72 +563,6 @@ namespace M64MMOrkestrator.Controls
             this.btnAddKf.UseVisualStyleBackColor = true;
             this.btnAddKf.Click += new System.EventHandler(this.btnAddKf_Click);
             // 
-            // btnBackKf
-            // 
-            this.btnBackKf.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnBackKf.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnBackKf.Image = global::M64MMOrkestrator.Properties.Resources.behindKf;
-            this.btnBackKf.Location = new System.Drawing.Point(509, 5);
-            this.btnBackKf.Name = "btnBackKf";
-            this.btnBackKf.Size = new System.Drawing.Size(30, 30);
-            this.btnBackKf.TabIndex = 10;
-            this.ttButtonInfo.SetToolTip(this.btnBackKf, "Previous Keyframe");
-            this.btnBackKf.UseVisualStyleBackColor = true;
-            this.btnBackKf.Click += new System.EventHandler(this.btnBackKf_Click);
-            // 
-            // btnFrontKf
-            // 
-            this.btnFrontKf.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnFrontKf.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnFrontKf.Image = global::M64MMOrkestrator.Properties.Resources.frontKf;
-            this.btnFrontKf.Location = new System.Drawing.Point(545, 5);
-            this.btnFrontKf.Name = "btnFrontKf";
-            this.btnFrontKf.Size = new System.Drawing.Size(30, 30);
-            this.btnFrontKf.TabIndex = 11;
-            this.ttButtonInfo.SetToolTip(this.btnFrontKf, "Next Keyframe");
-            this.btnFrontKf.UseVisualStyleBackColor = true;
-            this.btnFrontKf.Click += new System.EventHandler(this.btnFrontKf_Click);
-            // 
-            // nudLength
-            // 
-            this.nudLength.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.nudLength.Location = new System.Drawing.Point(438, 12);
-            this.nudLength.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-            this.nudLength.Name = "nudLength";
-            this.nudLength.Size = new System.Drawing.Size(65, 20);
-            this.nudLength.TabIndex = 9;
-            this.nudLength.Value = new decimal(new int[] {
-            60,
-            0,
-            0,
-            0});
-            this.nudLength.ValueChanged += new System.EventHandler(this.nudLength_ValueChanged);
-            // 
-            // label2
-            // 
-            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(314, 15);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(118, 13);
-            this.label2.TabIndex = 12;
-            this.label2.Text = "Timeline length (frames)";
-            // 
-            // cbSync
-            // 
-            this.cbSync.AutoSize = true;
-            this.cbSync.Location = new System.Drawing.Point(220, 13);
-            this.cbSync.Name = "cbSync";
-            this.cbSync.Size = new System.Drawing.Size(84, 17);
-            this.cbSync.TabIndex = 8;
-            this.cbSync.Text = "Synchronize";
-            this.cbSync.UseVisualStyleBackColor = true;
-            this.cbSync.CheckedChanged += new System.EventHandler(this.cbSync_CheckedChanged);
-            // 
             // TimelineRenderer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -568,9 +586,10 @@ namespace M64MMOrkestrator.Controls
             this.scRackTitles.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.scRackTitles)).EndInit();
             this.scRackTitles.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.nudLength)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbZoom)).EndInit();
             this.cmsKeyframeSettings.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.nudLength)).EndInit();
+            this.cmsWhy.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -615,5 +634,7 @@ namespace M64MMOrkestrator.Controls
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown nudLength;
         private System.Windows.Forms.CheckBox cbSync;
+        private System.Windows.Forms.ContextMenuStrip cmsWhy;
+        private System.Windows.Forms.ToolStripMenuItem whyCantIControlTheTimelineWithTheMouseToolStripMenuItem;
     }
 }
