@@ -114,7 +114,7 @@ namespace M64MMOrkestrator
 
         private void button7_Click(object sender, EventArgs e)
         {
-            KIOBase._mainForm?.Show();
+            KIOBase.MainForm?.Show();
         }
     }
 

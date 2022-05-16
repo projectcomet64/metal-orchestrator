@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using M64MM.Utils;
 using M64MMOrkestrator.KIO;
 using M64MMOrkestrator.Properties;
 
@@ -270,6 +271,7 @@ namespace M64MMOrkestrator.Controls
         private void btnPlay_Click(object sender, EventArgs e)
         {
             _tl.Playing = !_tl.Playing;
+            Core.UsingTurbo = _tl.Playing;
         }
 
         private void btnStop_Click(object sender, EventArgs e)

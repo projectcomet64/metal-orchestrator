@@ -17,13 +17,14 @@ namespace M64MMOrkestrator
         NOT_READY,
         READY,
         HOLDON,
-        DIRTY
+        DIRTY,
+        WTF
     }
 
     public static class KIOBase
     {
 
-        public static FrmMain _mainForm;
+        public static FrmMain MainForm;
 
         public static KIOStatus Status { get; set; }
 
@@ -135,8 +136,8 @@ namespace M64MMOrkestrator
                 return;
             }
             Status = KIOStatus.HOLDON;
-            if (!_mainForm.IsHandleCreated) return;
-            _mainForm?.Invoke(new MethodInvoker(() => { _mainForm.ChangeEnsembleStatus(Status); }));
+            if (!MainForm.IsHandleCreated) return;
+            MainForm?.Invoke(new MethodInvoker(() => { MainForm.ChangeEnsembleStatus(Status); }));
         }
 
         public static void InjectCamHack()
@@ -160,7 +161,7 @@ namespace M64MMOrkestrator
 
                 // keep it cool buddy, wait for the signal
                 mainTL.Synchronize = false;
-                _mainForm = new FrmMain();
+                MainForm = new FrmMain();
                 Inited = true;
             }
             Ensemble();

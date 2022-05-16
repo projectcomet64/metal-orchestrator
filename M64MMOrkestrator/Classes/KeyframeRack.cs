@@ -13,7 +13,10 @@ using Newtonsoft.Json;
 
 namespace M64MMOrkestrator.KIO
 {
-
+    /// <summary>
+    /// Base class for Keyframe Racks, which will be the containers of all kinds of keyframes. This class cannot be instantiated.
+    /// <para>You shouldn't use this class's derivatives on their own either. Add them to a Timeline.</para>
+    /// </summary>
     public abstract class KeyframeRack
     {
         [JsonProperty("name")]
@@ -111,7 +114,7 @@ namespace M64MMOrkestrator.KIO
     }
 
     /// <summary>
-    /// Base class for Keyframe Racks, which will be the containers of all kinds of keyframes. This class cannot be instantiated.
+    /// Base class for TYPED Keyframe Racks, which will be the containers of all kinds of keyframes. This class cannot be instantiated.
     /// <para>You shouldn't use this class's derivatives on their own either. Add them to a Timeline.</para>
     /// </summary>
     /// <typeparam name="TKeyframe">The underlying type for the Keyframes.</typeparam>
@@ -403,7 +406,8 @@ namespace M64MMOrkestrator.KIO
         public override void Wipe()
         {
             Clear();
-            AddCurrentStateAtPosition(0);
+            Keyframe<TKeyframe> kf = new Keyframe<TKeyframe>(valueGetter());
+            Add(kf);
         }
 
         public bool Remove(Keyframe<TKeyframe> item)

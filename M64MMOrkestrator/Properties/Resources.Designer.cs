@@ -371,6 +371,15 @@ namespace M64MMOrkestrator.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a -beta1.
+        /// </summary>
+        internal static string postVersionDecorator {
+            get {
+                return ResourceManager.GetString("postVersionDecorator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap rotBox {

@@ -10,6 +10,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using M64MM.Utils;
 using M64MMOrkestrator.Controls;
@@ -29,7 +30,7 @@ namespace M64MMOrkestrator
         public FrmMain()
         {
             InitializeComponent();
-             _tL = new TimelineRenderer(KIOBase.mainTL);
+            _tL = new TimelineRenderer(KIOBase.mainTL);
             pnlTimeline.Controls.Add(_tL);
             _tL.Dock = DockStyle.Fill;
             tsmLookBehind.Click += (a, b) => { KIOBase.CamAngle = new XYAngle(180, 0); };
@@ -51,24 +52,35 @@ namespace M64MMOrkestrator
                     {
                         lbStatus.Text = "Status: Not ready yet. Emulator probably hasn't started SM64 yet.";
                         btnEnsemble.Enabled = false;
+                        cbSHF.Checked = false;
                         break;
                     }
                 case KIOStatus.DIRTY:
                     {
                         lbStatus.Text = "Status: Disabled; game was likely running when KI-O first started or you loaded a savestate with KI-O disabled.";
                         btnEnsemble.Enabled = true;
+                        cbSHF.Checked = false;
+                        break;
+                    }
+                case KIOStatus.WTF:
+                    {
+                        lbStatus.Text = "Status: !?!? (You probably have GlideN Framebuffer enabled. Disable it in Graphics Settings and reopen PJ64)";
+                        btnEnsemble.Enabled = false;
+                        cbSHF.Checked = false;
                         break;
                     }
                 case KIOStatus.HOLDON:
                     {
                         lbStatus.Text = "Status: Waiting for you to enter a door, exit a level or start the game.";
                         btnEnsemble.Enabled = false;
+                        cbSHF.Checked = false;
                         break;
                     }
                 case KIOStatus.READY:
                     {
                         lbStatus.Text = "Status: Ready to rock.";
                         btnEnsemble.Enabled = false;
+                        cbSHF.Checked = false;
                         break;
                     }
             }
@@ -81,7 +93,7 @@ namespace M64MMOrkestrator
             float CLZ = (float)Math.Sin(-KIOBase.CamAngle.X * XYAngle.DEG_TO_RAD);
             Vector3 offs = new Vector3(xpos / pnlPosChange.Width * CLX,
                 ypos / pnlPosChange.Height, xpos / pnlPosChange.Width * CLZ);
-            
+
             offs = offs * tbSpd.Value / 2 * 20;
             return offs;
         }
@@ -97,7 +109,7 @@ namespace M64MMOrkestrator
 
         Vector3 NewZOffset(float ypos)
         {
-            Vector3 offs = _lastAngle.LookAtFromPosition(Vector3.Zero, 20) * (-ypos/pnlZPos.Height) * tbSpd.Value/2;
+            Vector3 offs = _lastAngle.LookAtFromPosition(Vector3.Zero, 20) * (-ypos / pnlZPos.Height) * tbSpd.Value / 2;
             return offs;
         }
 
@@ -124,6 +136,7 @@ namespace M64MMOrkestrator
             if (cbAddOnChange.Checked)
             {
                 KIOBase.camPosKeyframeRack.AddCurrentStateAtPosition(KIOBase.mainTL.TrackheadPosition);
+                _tL.Redraw();
             }
         }
 
@@ -147,13 +160,41 @@ namespace M64MMOrkestrator
         private void pnlZPos_MouseUp(object sender, MouseEventArgs e)
         {
             _isMouseDownOnPanel = false;
+            if (cbAddOnChange.Checked)
+            {
+                KIOBase.camPosKeyframeRack.AddCurrentStateAtPosition(KIOBase.mainTL.TrackheadPosition);
+                _tL.Redraw();
+            }
         }
 
         protected override void OnShown(EventArgs e)
         {
+            // if not beta 1 or greater, will die
+            Core.UsingTurbo = true;
+            Core.UsingTurbo = false;
             base.OnShown(e);
             ChangeEnsembleStatus(KIOBase.Status);
             _tL.Redraw();
+        }
+
+        public void UpdateValues()
+        {
+            if (KIOBase.Status == KIOStatus.READY)
+            {
+                lbInfo.Text =
+                    $"Camera is standing at:\n{KIOBase.CamPos}\n\nLooking towards (yaw, pitch):\n{KIOBase.CamAngle}\n\nMario is standing at: \n{KIOBase.MarioPos}";
+            }
+            else
+            {
+                lbInfo.Text = "Waiting for Godot (for Orchestrator to be ready)";
+            }
+
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            e.Cancel = true;
+            Hide();
         }
 
         private void cbSHF_CheckedChanged(object sender, EventArgs e)
@@ -162,11 +203,14 @@ namespace M64MMOrkestrator
             {
                 MessageBox.Show("Orchestrator is not ready. Go to the Orchestrator tab and click Ensemble.");
                 cbSHF.Checked = !cbSHF.Checked;
-                return;
             }
-            
-            gbControls.Enabled = cbSHF.Checked;
-            Core.WriteBytes(Core.BaseAddress + 0x3E0000, (cbSHF.Checked ? BitConverter.GetBytes((short)03) : BitConverter.GetBytes((short)00)));
+            else
+            {
+                gbControls.Enabled = cbSHF.Checked;
+                Core.ToggleCameraSoftFreeze();
+                Core.WriteBytes(Core.BaseAddress + 0x3E0000, (cbSHF.Checked ? BitConverter.GetBytes((short)03) : BitConverter.GetBytes((short)00)));
+            }
+
         }
 
         private void btnEnsemble_Click(object sender, EventArgs e)
@@ -180,6 +224,7 @@ namespace M64MMOrkestrator
             if (cbAddOnChange.Checked)
             {
                 KIOBase.angleKeyframeRack.AddCurrentStateAtPosition(KIOBase.mainTL.TrackheadPosition);
+                _tL.Redraw();
             }
         }
 
@@ -267,7 +312,7 @@ namespace M64MMOrkestrator
                 MessageBox.Show(
                     "Are you sure you want to do that\nIt really is not undoable! At least save your progress in File > Save Timeline...",
                     "Hol up", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1);
-            if (res == DialogResult.OK)
+            if (res == DialogResult.Yes)
             {
                 KIOBase.mainTL.WipeEverything();
             }

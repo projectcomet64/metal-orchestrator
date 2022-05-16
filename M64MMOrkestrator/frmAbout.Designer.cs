@@ -99,6 +99,7 @@ namespace M64MMOrkestrator
             this.btnComet.TabIndex = 5;
             this.btnComet.Text = "More Project Comet stuff";
             this.btnComet.UseVisualStyleBackColor = true;
+            this.btnComet.Click += new System.EventHandler(this.btnComet_Click);
             // 
             // btnGh
             // 
@@ -108,6 +109,7 @@ namespace M64MMOrkestrator
             this.btnGh.TabIndex = 6;
             this.btnGh.Text = "Orchestrator Github";
             this.btnGh.UseVisualStyleBackColor = true;
+            this.btnGh.Click += new System.EventHandler(this.btnGh_Click);
             // 
             // btnPatreon
             // 
@@ -117,6 +119,7 @@ namespace M64MMOrkestrator
             this.btnPatreon.TabIndex = 7;
             this.btnPatreon.Text = "Patreon";
             this.btnPatreon.UseVisualStyleBackColor = true;
+            this.btnPatreon.Click += new System.EventHandler(this.btnPatreon_Click);
             // 
             // btnYoutube
             // 
@@ -126,6 +129,7 @@ namespace M64MMOrkestrator
             this.btnYoutube.TabIndex = 8;
             this.btnYoutube.Text = "Youtube";
             this.btnYoutube.UseVisualStyleBackColor = true;
+            this.btnYoutube.Click += new System.EventHandler(this.btnYoutube_Click);
             // 
             // label4
             // 
@@ -144,6 +148,7 @@ namespace M64MMOrkestrator
             this.btnDiscord.TabIndex = 10;
             this.btnDiscord.Text = "Project Comet Discord";
             this.btnDiscord.UseVisualStyleBackColor = true;
+            this.btnDiscord.Click += new System.EventHandler(this.btnDiscord_Click);
             // 
             // btnOK
             // 
@@ -173,6 +178,7 @@ namespace M64MMOrkestrator
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmAbout";

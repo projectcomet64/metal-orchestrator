@@ -23,7 +23,7 @@ namespace M64MMOrkestrator.KIO
     public class Timeline
     {
         // TODO: Make this one private and expose a readonlydictionary instead
-        public Dictionary<string, KeyframeRack> KeyframeRacks { get; } = new Dictionary<string, KeyframeRack>();
+        public Dictionary<string, KeyframeRack> KeyframeRacks { get; } = new ();
 
         public Dictionary<string, UncommittedRackChange> UncommittedRackChanges { get; } =
             new Dictionary<string, UncommittedRackChange>();
@@ -175,7 +175,7 @@ namespace M64MMOrkestrator.KIO
             {
                 kRack.Value.Wipe();
             }
-            OnTimelineLoaded?.Invoke();
+            OnTimelineLoaded?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

@@ -91,8 +91,9 @@ namespace M64MMOrkestrator
             this.Controls.Add(this.pbNaz);
             this.Cursor = System.Windows.Forms.Cursors.Default;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmNazOops";
-            this.Text = "Why can\'t I save or use the Timeline with the mouse?";
+            this.Text = "Why can\'t I use the Timeline with the mouse?";
             ((System.ComponentModel.ISupportInitialize)(this.pbNaz)).EndInit();
             this.ResumeLayout(false);
 

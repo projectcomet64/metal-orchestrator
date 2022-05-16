@@ -68,6 +68,7 @@ namespace M64MMOrkestrator
             this.ttInfo = new System.Windows.Forms.ToolTip(this.components);
             this.gbInfo = new System.Windows.Forms.GroupBox();
             this.lbInfo = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.msMainMenu.SuspendLayout();
             this.tbcMain.SuspendLayout();
             this.tbOrk.SuspendLayout();
@@ -113,8 +114,8 @@ namespace M64MMOrkestrator
             // saveTimelineToolStripMenuItem
             // 
             this.saveTimelineToolStripMenuItem.Name = "saveTimelineToolStripMenuItem";
-            this.saveTimelineToolStripMenuItem.Size = new System.Drawing.Size(329, 22);
-            this.saveTimelineToolStripMenuItem.Text = "Save Timeline (You can\'t, click to find out why)...";
+            this.saveTimelineToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveTimelineToolStripMenuItem.Text = "Save Timeline...";
             this.saveTimelineToolStripMenuItem.Click += new System.EventHandler(this.saveTimelineToolStripMenuItem_Click);
             // 
             // loadTimelineToolStripMenuItem
@@ -367,6 +368,7 @@ namespace M64MMOrkestrator
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.btnWipe);
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
             this.groupBox1.Name = "groupBox1";
@@ -456,6 +458,15 @@ namespace M64MMOrkestrator
             this.lbInfo.TabIndex = 0;
             this.lbInfo.Text = "Waiting for Godot (for Orchestrator to be ready)\r\n";
             // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(168, 71);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(276, 140);
+            this.label2.TabIndex = 1;
+            this.label2.Text = resources.GetString("label2.Text");
+            this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -464,6 +475,7 @@ namespace M64MMOrkestrator
             this.Controls.Add(this.tbcMain);
             this.Controls.Add(this.pnlTimeline);
             this.Controls.Add(this.msMainMenu);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.msMainMenu;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(2048, 534);
@@ -527,5 +539,6 @@ namespace M64MMOrkestrator
         private System.Windows.Forms.Button btnWipe;
         private System.Windows.Forms.GroupBox gbInfo;
         private System.Windows.Forms.Label lbInfo;
+        private System.Windows.Forms.Label label2;
     }
 }

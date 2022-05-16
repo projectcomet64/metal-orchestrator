@@ -31,7 +31,7 @@ namespace M64MMOrkestrator
         {
             List<ToolCommand> tcl = new List<ToolCommand>();
             ToolCommand tc = new ToolCommand("Codename KI-O");
-            tc.Summoned += (a, b) => { KIOBase._mainForm.Show(); };
+            tc.Summoned += (a, b) => { KIOBase.MainForm.Show(); };
             tcl.Add(tc);
             return tcl;
         }
@@ -53,8 +53,8 @@ namespace M64MMOrkestrator
                 // Game running and Mario is present
                 KIOBase.Init();
                 KIOBase.Status = statBytes[0] != 0xFF ? KIOStatus.DIRTY : KIOStatus.READY;
-                if (KIOBase._mainForm.IsHandleCreated)
-                    KIOBase._mainForm?.Invoke(new MethodInvoker(() => { KIOBase._mainForm.ChangeEnsembleStatus(KIOBase.Status); }));
+                if (KIOBase.MainForm.IsHandleCreated)
+                    KIOBase.MainForm?.Invoke(new MethodInvoker(() => { KIOBase.MainForm.ChangeEnsembleStatus(KIOBase.Status); }));
             }
             else
             {
@@ -67,8 +67,8 @@ namespace M64MMOrkestrator
         public void OnBaseAddressZero()
         {
             KIOBase.Status = KIOStatus.NOT_READY;
-            if (KIOBase._mainForm.IsHandleCreated)
-                KIOBase._mainForm?.Invoke(new MethodInvoker(() => { KIOBase._mainForm.ChangeEnsembleStatus(KIOBase.Status); }));
+            if (KIOBase.MainForm.IsHandleCreated)
+                KIOBase.MainForm?.Invoke(new MethodInvoker(() => { KIOBase.MainForm.ChangeEnsembleStatus(KIOBase.Status); }));
         }
 
         public void OnCoreEntAddressChange(uint addr)
@@ -76,16 +76,25 @@ namespace M64MMOrkestrator
 
             byte[] statBytes = Core.ReadBytes(Core.BaseAddress + CamStatBase, 2);
             // Level changed, KI-O flag not present (also savestate)
-            KIOBase.Status = statBytes[0] != 0xFF ? KIOStatus.DIRTY : KIOStatus.READY;
-            if (KIOBase._mainForm.IsHandleCreated)
-                KIOBase._mainForm?.Invoke(new MethodInvoker(() => { KIOBase._mainForm.ChangeEnsembleStatus(KIOBase.Status); }));
+            if (statBytes[0] != 0xFF)
+            {
+                KIOBase.Status = KIOStatus.DIRTY;
+            }
+
+            if (statBytes[1] != 0x00)
+            {
+                KIOBase.Status = KIOStatus.WTF;
+            }
+
+            if (KIOBase.MainForm.IsHandleCreated)
+                KIOBase.MainForm?.Invoke(new MethodInvoker(() => { KIOBase.MainForm.ChangeEnsembleStatus(KIOBase.Status); }));
 
             if (addr != 0 && KIOBase.Status == KIOStatus.HOLDON)
             {
                 KIOBase.InjectCamHack();
                 KIOBase.Status = KIOStatus.READY;
-                if (KIOBase._mainForm.IsHandleCreated)
-                    KIOBase._mainForm?.Invoke(new MethodInvoker(() => { KIOBase._mainForm.ChangeEnsembleStatus(KIOBase.Status); }));
+                if (KIOBase.MainForm.IsHandleCreated)
+                    KIOBase.MainForm?.Invoke(new MethodInvoker(() => { KIOBase.MainForm.ChangeEnsembleStatus(KIOBase.Status); }));
             }
         }
 
@@ -96,12 +105,22 @@ namespace M64MMOrkestrator
 
         public void Update()
         {
+            if (KIOBase.MainForm.IsHandleCreated)
+            {
+                KIOBase.MainForm.BeginInvoke(new MethodInvoker(() => { KIOBase.MainForm.UpdateValues(); }));
+            }
+
             if (KIOBase.Status == KIOStatus.READY)
             {
                 byte[] statBytes = Core.ReadBytes(Core.BaseAddress + CamStatBase, 2);
                 if (statBytes[0] != 0xFF)
                 {
                     KIOBase.Status = KIOStatus.DIRTY;
+                }
+
+                if (statBytes[1] != 0x00)
+                {
+                    KIOBase.Status = KIOStatus.WTF;
                 }
             }
 
