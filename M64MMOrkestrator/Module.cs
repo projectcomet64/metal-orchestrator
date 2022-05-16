@@ -30,7 +30,7 @@ namespace M64MMOrkestrator
         public List<ToolCommand> GetCommands()
         {
             List<ToolCommand> tcl = new List<ToolCommand>();
-            ToolCommand tc = new ToolCommand("Codename KI-O");
+            ToolCommand tc = new ToolCommand("Open Orchestrator...");
             tc.Summoned += (a, b) => { KIOBase.MainForm.Show(); };
             tcl.Add(tc);
             return tcl;
