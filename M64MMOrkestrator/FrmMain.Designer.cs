@@ -43,7 +43,10 @@ namespace M64MMOrkestrator
             this.tbcMain = new System.Windows.Forms.TabControl();
             this.tbOrk = new System.Windows.Forms.TabPage();
             this.tbCam = new System.Windows.Forms.TabPage();
+            this.gbInfo = new System.Windows.Forms.GroupBox();
+            this.lbInfo = new System.Windows.Forms.Label();
             this.gbControls = new System.Windows.Forms.GroupBox();
+            this.lbSpd = new System.Windows.Forms.Label();
             this.cbAddOnChange = new System.Windows.Forms.CheckBox();
             this.pnlPosChange = new System.Windows.Forms.Panel();
             this.pnlZPos = new System.Windows.Forms.Panel();
@@ -57,6 +60,9 @@ namespace M64MMOrkestrator
             this.cbSHF = new System.Windows.Forms.CheckBox();
             this.tbpTimelineControls = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.btnCollapseTl = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             this.btnWipe = new System.Windows.Forms.Button();
             this.cmsDirection = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmLookUp = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,28 +72,29 @@ namespace M64MMOrkestrator
             this.tsmLookForward = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmLookBehind = new System.Windows.Forms.ToolStripMenuItem();
             this.ttInfo = new System.Windows.Forms.ToolTip(this.components);
-            this.gbInfo = new System.Windows.Forms.GroupBox();
-            this.lbInfo = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.scMain = new System.Windows.Forms.SplitContainer();
             this.msMainMenu.SuspendLayout();
             this.tbcMain.SuspendLayout();
             this.tbOrk.SuspendLayout();
             this.tbCam.SuspendLayout();
+            this.gbInfo.SuspendLayout();
             this.gbControls.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbSpd)).BeginInit();
             this.tbpTimelineControls.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.cmsDirection.SuspendLayout();
-            this.gbInfo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scMain)).BeginInit();
+            this.scMain.Panel1.SuspendLayout();
+            this.scMain.Panel2.SuspendLayout();
+            this.scMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlTimeline
             // 
-            this.pnlTimeline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlTimeline.Location = new System.Drawing.Point(12, 303);
+            this.pnlTimeline.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlTimeline.Location = new System.Drawing.Point(0, 0);
             this.pnlTimeline.Name = "pnlTimeline";
-            this.pnlTimeline.Size = new System.Drawing.Size(1060, 180);
+            this.pnlTimeline.Size = new System.Drawing.Size(1084, 229);
             this.pnlTimeline.TabIndex = 13;
             // 
             // msMainMenu
@@ -114,14 +121,14 @@ namespace M64MMOrkestrator
             // saveTimelineToolStripMenuItem
             // 
             this.saveTimelineToolStripMenuItem.Name = "saveTimelineToolStripMenuItem";
-            this.saveTimelineToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveTimelineToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.saveTimelineToolStripMenuItem.Text = "Save Timeline...";
             this.saveTimelineToolStripMenuItem.Click += new System.EventHandler(this.saveTimelineToolStripMenuItem_Click);
             // 
             // loadTimelineToolStripMenuItem
             // 
             this.loadTimelineToolStripMenuItem.Name = "loadTimelineToolStripMenuItem";
-            this.loadTimelineToolStripMenuItem.Size = new System.Drawing.Size(329, 22);
+            this.loadTimelineToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.loadTimelineToolStripMenuItem.Text = "Load Timeline...";
             this.loadTimelineToolStripMenuItem.Click += new System.EventHandler(this.loadTimelineToolStripMenuItem_Click);
             // 
@@ -136,9 +143,9 @@ namespace M64MMOrkestrator
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.Location = new System.Drawing.Point(3, 3);
+            this.label1.Location = new System.Drawing.Point(3, 22);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(1043, 43);
+            this.label1.Size = new System.Drawing.Size(1067, 43);
             this.label1.TabIndex = 0;
             this.label1.Text = "Orchestrator needs to write the code for freecam before use.\r\n\r\nIf none of the co" +
     "ntrols or Timeline work, you might need to click this.\r\n";
@@ -148,9 +155,9 @@ namespace M64MMOrkestrator
             // 
             this.btnEnsemble.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnEnsemble.Location = new System.Drawing.Point(285, 49);
+            this.btnEnsemble.Location = new System.Drawing.Point(285, 68);
             this.btnEnsemble.Name = "btnEnsemble";
-            this.btnEnsemble.Size = new System.Drawing.Size(495, 23);
+            this.btnEnsemble.Size = new System.Drawing.Size(519, 23);
             this.btnEnsemble.TabIndex = 1;
             this.btnEnsemble.Text = "Ensemble";
             this.btnEnsemble.UseVisualStyleBackColor = true;
@@ -161,25 +168,23 @@ namespace M64MMOrkestrator
             this.lbStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbStatus.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbStatus.Location = new System.Drawing.Point(77, 75);
+            this.lbStatus.Location = new System.Drawing.Point(77, 94);
             this.lbStatus.Name = "lbStatus";
-            this.lbStatus.Size = new System.Drawing.Size(910, 69);
+            this.lbStatus.Size = new System.Drawing.Size(934, 69);
             this.lbStatus.TabIndex = 2;
             this.lbStatus.Text = "Status: Not Ready";
             this.lbStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // tbcMain
             // 
-            this.tbcMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tbcMain.Controls.Add(this.tbOrk);
             this.tbcMain.Controls.Add(this.tbCam);
             this.tbcMain.Controls.Add(this.tbpTimelineControls);
-            this.tbcMain.Location = new System.Drawing.Point(12, 27);
+            this.tbcMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbcMain.Location = new System.Drawing.Point(0, 0);
             this.tbcMain.Name = "tbcMain";
             this.tbcMain.SelectedIndex = 0;
-            this.tbcMain.Size = new System.Drawing.Size(1060, 270);
+            this.tbcMain.Size = new System.Drawing.Size(1084, 263);
             this.tbcMain.TabIndex = 16;
             // 
             // tbOrk
@@ -190,7 +195,7 @@ namespace M64MMOrkestrator
             this.tbOrk.Location = new System.Drawing.Point(4, 22);
             this.tbOrk.Name = "tbOrk";
             this.tbOrk.Padding = new System.Windows.Forms.Padding(3);
-            this.tbOrk.Size = new System.Drawing.Size(1052, 244);
+            this.tbOrk.Size = new System.Drawing.Size(1076, 237);
             this.tbOrk.TabIndex = 0;
             this.tbOrk.Text = "Orchestrator";
             this.tbOrk.UseVisualStyleBackColor = true;
@@ -204,13 +209,36 @@ namespace M64MMOrkestrator
             this.tbCam.Location = new System.Drawing.Point(4, 22);
             this.tbCam.Name = "tbCam";
             this.tbCam.Padding = new System.Windows.Forms.Padding(3);
-            this.tbCam.Size = new System.Drawing.Size(1052, 244);
+            this.tbCam.Size = new System.Drawing.Size(1076, 237);
             this.tbCam.TabIndex = 1;
             this.tbCam.Text = "Camera Controls";
             this.tbCam.UseVisualStyleBackColor = true;
             // 
+            // gbInfo
+            // 
+            this.gbInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbInfo.Controls.Add(this.lbInfo);
+            this.gbInfo.Location = new System.Drawing.Point(783, 34);
+            this.gbInfo.Name = "gbInfo";
+            this.gbInfo.Size = new System.Drawing.Size(270, 198);
+            this.gbInfo.TabIndex = 12;
+            this.gbInfo.TabStop = false;
+            this.gbInfo.Text = "Information";
+            // 
+            // lbInfo
+            // 
+            this.lbInfo.AutoSize = true;
+            this.lbInfo.Location = new System.Drawing.Point(6, 16);
+            this.lbInfo.Name = "lbInfo";
+            this.lbInfo.Size = new System.Drawing.Size(228, 13);
+            this.lbInfo.TabIndex = 0;
+            this.lbInfo.Text = "Waiting for Godot (for Orchestrator to be ready)\r\n";
+            // 
             // gbControls
             // 
+            this.gbControls.Controls.Add(this.lbSpd);
             this.gbControls.Controls.Add(this.cbAddOnChange);
             this.gbControls.Controls.Add(this.pnlPosChange);
             this.gbControls.Controls.Add(this.pnlZPos);
@@ -229,10 +257,19 @@ namespace M64MMOrkestrator
             this.gbControls.TabStop = false;
             this.gbControls.Text = "Controls";
             // 
+            // lbSpd
+            // 
+            this.lbSpd.AutoSize = true;
+            this.lbSpd.Location = new System.Drawing.Point(247, 157);
+            this.lbSpd.Name = "lbSpd";
+            this.lbSpd.Size = new System.Drawing.Size(33, 13);
+            this.lbSpd.TabIndex = 10;
+            this.lbSpd.Text = "100%";
+            // 
             // cbAddOnChange
             // 
             this.cbAddOnChange.AutoSize = true;
-            this.cbAddOnChange.Location = new System.Drawing.Point(308, 157);
+            this.cbAddOnChange.Location = new System.Drawing.Point(312, 72);
             this.cbAddOnChange.Name = "cbAddOnChange";
             this.cbAddOnChange.Size = new System.Drawing.Size(137, 17);
             this.cbAddOnChange.TabIndex = 9;
@@ -281,9 +318,9 @@ namespace M64MMOrkestrator
             // 
             // btnLookTowards
             // 
-            this.btnLookTowards.Location = new System.Drawing.Point(606, 151);
+            this.btnLookTowards.Location = new System.Drawing.Point(306, 95);
             this.btnLookTowards.Name = "btnLookTowards";
-            this.btnLookTowards.Size = new System.Drawing.Size(148, 23);
+            this.btnLookTowards.Size = new System.Drawing.Size(158, 23);
             this.btnLookTowards.TabIndex = 8;
             this.btnLookTowards.Text = "Look towards direction...";
             this.ttInfo.SetToolTip(this.btnLookTowards, "Look towards a specific direction from the current camera position.");
@@ -292,18 +329,18 @@ namespace M64MMOrkestrator
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(305, 16);
+            this.label3.Location = new System.Drawing.Point(513, 16);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(461, 128);
+            this.label3.Size = new System.Drawing.Size(253, 160);
             this.label3.TabIndex = 2;
             this.label3.Text = resources.GetString("label3.Text");
             this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // btnCloseMario
             // 
-            this.btnCloseMario.Location = new System.Drawing.Point(451, 152);
+            this.btnCloseMario.Location = new System.Drawing.Point(305, 124);
             this.btnCloseMario.Name = "btnCloseMario";
-            this.btnCloseMario.Size = new System.Drawing.Size(149, 23);
+            this.btnCloseMario.Size = new System.Drawing.Size(159, 23);
             this.btnCloseMario.TabIndex = 7;
             this.btnCloseMario.Text = "Get close to Mario";
             this.ttInfo.SetToolTip(this.btnCloseMario, "Gets close to Mario using the last angle the program remembers.");
@@ -323,6 +360,7 @@ namespace M64MMOrkestrator
             this.tbSpd.TickStyle = System.Windows.Forms.TickStyle.None;
             this.ttInfo.SetToolTip(this.tbSpd, "Sets the speed at which the camera controls change the camera.");
             this.tbSpd.Value = 100;
+            this.tbSpd.ValueChanged += new System.EventHandler(this.tbSpd_ValueChanged);
             // 
             // label4
             // 
@@ -335,11 +373,11 @@ namespace M64MMOrkestrator
             // 
             // btnResetSpd
             // 
-            this.btnResetSpd.Location = new System.Drawing.Point(247, 153);
+            this.btnResetSpd.Location = new System.Drawing.Point(305, 152);
             this.btnResetSpd.Name = "btnResetSpd";
-            this.btnResetSpd.Size = new System.Drawing.Size(55, 23);
+            this.btnResetSpd.Size = new System.Drawing.Size(159, 23);
             this.btnResetSpd.TabIndex = 5;
-            this.btnResetSpd.Text = "100%";
+            this.btnResetSpd.Text = "Reset panels speed to 100%";
             this.ttInfo.SetToolTip(this.btnResetSpd, "Sets speed back to 100%");
             this.btnResetSpd.UseVisualStyleBackColor = true;
             this.btnResetSpd.Click += new System.EventHandler(this.btnResetSpd_Click);
@@ -361,25 +399,56 @@ namespace M64MMOrkestrator
             this.tbpTimelineControls.Location = new System.Drawing.Point(4, 22);
             this.tbpTimelineControls.Name = "tbpTimelineControls";
             this.tbpTimelineControls.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpTimelineControls.Size = new System.Drawing.Size(1052, 244);
+            this.tbpTimelineControls.Size = new System.Drawing.Size(1076, 237);
             this.tbpTimelineControls.TabIndex = 2;
             this.tbpTimelineControls.Text = "Timeline Controls";
             this.tbpTimelineControls.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.btnCollapseTl);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.btnWipe);
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(622, 232);
+            this.groupBox1.Size = new System.Drawing.Size(622, 225);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Timeline";
             // 
+            // label5
+            // 
+            this.label5.Location = new System.Drawing.Point(288, 45);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(276, 140);
+            this.label5.TabIndex = 3;
+            this.label5.Text = "This hides the Timeline. Useful if you don\'t want to use any of that fancy schman" +
+    "cy keyframe thing and just want the freecam.";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // btnCollapseTl
+            // 
+            this.btnCollapseTl.Location = new System.Drawing.Point(288, 19);
+            this.btnCollapseTl.Name = "btnCollapseTl";
+            this.btnCollapseTl.Size = new System.Drawing.Size(273, 23);
+            this.btnCollapseTl.TabIndex = 2;
+            this.btnCollapseTl.Text = "Collapse/uncollapse Timeline";
+            this.btnCollapseTl.UseVisualStyleBackColor = true;
+            this.btnCollapseTl.Click += new System.EventHandler(this.btnCollapseTl_Click);
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(6, 45);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(276, 140);
+            this.label2.TabIndex = 1;
+            this.label2.Text = resources.GetString("label2.Text");
+            this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
             // btnWipe
             // 
-            this.btnWipe.Location = new System.Drawing.Point(171, 29);
+            this.btnWipe.Location = new System.Drawing.Point(6, 19);
             this.btnWipe.Name = "btnWipe";
             this.btnWipe.Size = new System.Drawing.Size(273, 23);
             this.btnWipe.TabIndex = 0;
@@ -436,66 +505,62 @@ namespace M64MMOrkestrator
             this.tsmLookBehind.Size = new System.Drawing.Size(117, 22);
             this.tsmLookBehind.Text = "Behind";
             // 
-            // gbInfo
+            // scMain
             // 
-            this.gbInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbInfo.Controls.Add(this.lbInfo);
-            this.gbInfo.Location = new System.Drawing.Point(783, 34);
-            this.gbInfo.Name = "gbInfo";
-            this.gbInfo.Size = new System.Drawing.Size(263, 198);
-            this.gbInfo.TabIndex = 12;
-            this.gbInfo.TabStop = false;
-            this.gbInfo.Text = "Information";
+            this.scMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.scMain.Location = new System.Drawing.Point(0, 23);
+            this.scMain.Name = "scMain";
+            this.scMain.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // lbInfo
+            // scMain.Panel1
             // 
-            this.lbInfo.AutoSize = true;
-            this.lbInfo.Location = new System.Drawing.Point(6, 16);
-            this.lbInfo.Name = "lbInfo";
-            this.lbInfo.Size = new System.Drawing.Size(228, 13);
-            this.lbInfo.TabIndex = 0;
-            this.lbInfo.Text = "Waiting for Godot (for Orchestrator to be ready)\r\n";
+            this.scMain.Panel1.Controls.Add(this.tbcMain);
             // 
-            // label2
+            // scMain.Panel2
             // 
-            this.label2.Location = new System.Drawing.Point(168, 71);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(276, 140);
-            this.label2.TabIndex = 1;
-            this.label2.Text = resources.GetString("label2.Text");
-            this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.scMain.Panel2.Controls.Add(this.pnlTimeline);
+            this.scMain.Panel2MinSize = 220;
+            this.scMain.Size = new System.Drawing.Size(1084, 496);
+            this.scMain.SplitterDistance = 263;
+            this.scMain.TabIndex = 17;
+            this.scMain.TabStop = false;
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1084, 495);
-            this.Controls.Add(this.tbcMain);
-            this.Controls.Add(this.pnlTimeline);
+            this.ClientSize = new System.Drawing.Size(1084, 519);
+            this.Controls.Add(this.scMain);
             this.Controls.Add(this.msMainMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MainMenuStrip = this.msMainMenu;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(2048, 534);
-            this.MinimumSize = new System.Drawing.Size(1100, 262);
+            this.MaximumSize = new System.Drawing.Size(2048, 1024);
+            this.MinimumSize = new System.Drawing.Size(1100, 312);
             this.Name = "FrmMain";
             this.Text = "METAL Orchestrator";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmMain_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.FrmMain_KeyUp);
             this.msMainMenu.ResumeLayout(false);
             this.msMainMenu.PerformLayout();
             this.tbcMain.ResumeLayout(false);
             this.tbOrk.ResumeLayout(false);
             this.tbCam.ResumeLayout(false);
             this.tbCam.PerformLayout();
+            this.gbInfo.ResumeLayout(false);
+            this.gbInfo.PerformLayout();
             this.gbControls.ResumeLayout(false);
             this.gbControls.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbSpd)).EndInit();
             this.tbpTimelineControls.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.cmsDirection.ResumeLayout(false);
-            this.gbInfo.ResumeLayout(false);
-            this.gbInfo.PerformLayout();
+            this.scMain.Panel1.ResumeLayout(false);
+            this.scMain.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.scMain)).EndInit();
+            this.scMain.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -540,5 +605,9 @@ namespace M64MMOrkestrator
         private System.Windows.Forms.GroupBox gbInfo;
         private System.Windows.Forms.Label lbInfo;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.SplitContainer scMain;
+        private System.Windows.Forms.Label lbSpd;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button btnCollapseTl;
     }
 }
