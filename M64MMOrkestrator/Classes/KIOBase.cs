@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using M64MM.Utils;
-using M64MMOrkestrator.KIO;
+using Keyshift.Core;
+using Keyshift.Core.Classes;
+using Keyshift.Core.Classes.Rack;
+using Keyshift.Core.Classes.Rack.Types;
 using M64MMOrkestrator.Properties;
 
 namespace M64MMOrkestrator
@@ -106,9 +109,9 @@ namespace M64MMOrkestrator
             }
         }
 
-        private static XYAngle _camAngle;
+        private static Keyshift.Core.Classes.Rack.Types.XYAngle _camAngle;
 
-        public static XYAngle CamAngle
+        public static Keyshift.Core.Classes.Rack.Types.XYAngle CamAngle
         {
             get => _camAngle;
             set
@@ -156,8 +159,8 @@ namespace M64MMOrkestrator
                 mainTL = new Timeline();
                 mainTL.AddRack("campos", camPosKeyframeRack);
                 mainTL.AddRack("camrot", angleKeyframeRack);
-                camPosKeyframeRack.OnCurrentFrameChanged += () => { CamPos = camPosKeyframeRack.CalculateInterpolation(); };
-                angleKeyframeRack.OnCurrentFrameChanged += () => { CamAngle = angleKeyframeRack.CalculateInterpolation(); };
+                camPosKeyframeRack.CurrentFrameChanged += () => { CamPos = camPosKeyframeRack.CalculateInterpolation(); };
+                angleKeyframeRack.CurrentFrameChanged += () => { CamAngle = angleKeyframeRack.CalculateInterpolation(); };
 
                 // keep it cool buddy, wait for the signal
                 mainTL.Synchronize = false;

@@ -87,7 +87,7 @@ namespace M64MMOrkestrator
             // 
             this.label3.Location = new System.Drawing.Point(220, 90);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(511, 209);
+            this.label3.Size = new System.Drawing.Size(511, 238);
             this.label3.TabIndex = 4;
             this.label3.Text = resources.GetString("label3.Text");
             // 

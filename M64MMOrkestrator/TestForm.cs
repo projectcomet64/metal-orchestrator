@@ -10,6 +10,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Keyshift.Core.Classes.Rack.Types;
 
 namespace M64MMOrkestrator
 {

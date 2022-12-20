@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // La información general de un ensamblado se controla mediante el siguiente 
 // conjunto de atributos. Cambie estos valores de atributo para modificar la información
 // asociada con un ensamblado.
-[assembly: AssemblyTitle("M64MMOrkestrator")]
+[assembly: AssemblyTitle("METAL Orchestrator")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("HP Inc.")]
-[assembly: AssemblyProduct("M64MMOrkestrator")]
-[assembly: AssemblyCopyright("Copyright © HP Inc. 2021")]
+[assembly: AssemblyCompany("Project Comet")]
+[assembly: AssemblyProduct("METAL Orchestrator")]
+[assembly: AssemblyCopyright("Copyright © Project Comet 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // Puede especificar todos los valores o usar los valores predeterminados de número de compilación y de revisión
 // utilizando el carácter "*", como se muestra a continuación:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]

@@ -73,6 +73,10 @@ namespace M64MMOrkestrator
             this.tsmLookBehind = new System.Windows.Forms.ToolStripMenuItem();
             this.ttInfo = new System.Windows.Forms.ToolTip(this.components);
             this.scMain = new System.Windows.Forms.SplitContainer();
+            this.tbpUndoRedo = new System.Windows.Forms.TabPage();
+            this.gbUndoRedo = new System.Windows.Forms.GroupBox();
+            this.lbUndoRedo = new System.Windows.Forms.ListBox();
+            this.btnClearHistory = new System.Windows.Forms.Button();
             this.msMainMenu.SuspendLayout();
             this.tbcMain.SuspendLayout();
             this.tbOrk.SuspendLayout();
@@ -87,6 +91,8 @@ namespace M64MMOrkestrator
             this.scMain.Panel1.SuspendLayout();
             this.scMain.Panel2.SuspendLayout();
             this.scMain.SuspendLayout();
+            this.tbpUndoRedo.SuspendLayout();
+            this.gbUndoRedo.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlTimeline
@@ -94,11 +100,12 @@ namespace M64MMOrkestrator
             this.pnlTimeline.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlTimeline.Location = new System.Drawing.Point(0, 0);
             this.pnlTimeline.Name = "pnlTimeline";
-            this.pnlTimeline.Size = new System.Drawing.Size(1084, 229);
+            this.pnlTimeline.Size = new System.Drawing.Size(1084, 227);
             this.pnlTimeline.TabIndex = 13;
             // 
             // msMainMenu
             // 
+            this.msMainMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.msMainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.aboutKIOToolStripMenuItem});
@@ -180,6 +187,7 @@ namespace M64MMOrkestrator
             this.tbcMain.Controls.Add(this.tbOrk);
             this.tbcMain.Controls.Add(this.tbCam);
             this.tbcMain.Controls.Add(this.tbpTimelineControls);
+            this.tbcMain.Controls.Add(this.tbpUndoRedo);
             this.tbcMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbcMain.Location = new System.Drawing.Point(0, 0);
             this.tbcMain.Name = "tbcMain";
@@ -412,7 +420,7 @@ namespace M64MMOrkestrator
             this.groupBox1.Controls.Add(this.btnWipe);
             this.groupBox1.Location = new System.Drawing.Point(6, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(622, 225);
+            this.groupBox1.Size = new System.Drawing.Size(572, 225);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Timeline";
@@ -458,6 +466,7 @@ namespace M64MMOrkestrator
             // 
             // cmsDirection
             // 
+            this.cmsDirection.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.cmsDirection.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmLookUp,
             this.tsmLookDown,
@@ -521,16 +530,60 @@ namespace M64MMOrkestrator
             // 
             this.scMain.Panel2.Controls.Add(this.pnlTimeline);
             this.scMain.Panel2MinSize = 220;
-            this.scMain.Size = new System.Drawing.Size(1084, 496);
+            this.scMain.Size = new System.Drawing.Size(1084, 494);
             this.scMain.SplitterDistance = 263;
             this.scMain.TabIndex = 17;
             this.scMain.TabStop = false;
+            // 
+            // tbpUndoRedo
+            // 
+            this.tbpUndoRedo.Controls.Add(this.gbUndoRedo);
+            this.tbpUndoRedo.Location = new System.Drawing.Point(4, 22);
+            this.tbpUndoRedo.Name = "tbpUndoRedo";
+            this.tbpUndoRedo.Padding = new System.Windows.Forms.Padding(3);
+            this.tbpUndoRedo.Size = new System.Drawing.Size(1076, 237);
+            this.tbpUndoRedo.TabIndex = 3;
+            this.tbpUndoRedo.Text = "Edit History";
+            this.tbpUndoRedo.UseVisualStyleBackColor = true;
+            // 
+            // gbUndoRedo
+            // 
+            this.gbUndoRedo.Controls.Add(this.btnClearHistory);
+            this.gbUndoRedo.Controls.Add(this.lbUndoRedo);
+            this.gbUndoRedo.Location = new System.Drawing.Point(8, 6);
+            this.gbUndoRedo.Name = "gbUndoRedo";
+            this.gbUndoRedo.Size = new System.Drawing.Size(674, 225);
+            this.gbUndoRedo.TabIndex = 0;
+            this.gbUndoRedo.TabStop = false;
+            this.gbUndoRedo.Text = "History";
+            // 
+            // lbUndoRedo
+            // 
+            this.lbUndoRedo.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.lbUndoRedo.FormattingEnabled = true;
+            this.lbUndoRedo.Location = new System.Drawing.Point(6, 19);
+            this.lbUndoRedo.Name = "lbUndoRedo";
+            this.lbUndoRedo.SelectionMode = System.Windows.Forms.SelectionMode.None;
+            this.lbUndoRedo.Size = new System.Drawing.Size(476, 199);
+            this.lbUndoRedo.TabIndex = 0;
+            this.lbUndoRedo.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lbUndoRedo_DrawItem);
+            this.lbUndoRedo.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.lbUndoRedo_MeasureItem);
+            // 
+            // btnClearHistory
+            // 
+            this.btnClearHistory.Location = new System.Drawing.Point(488, 19);
+            this.btnClearHistory.Name = "btnClearHistory";
+            this.btnClearHistory.Size = new System.Drawing.Size(180, 23);
+            this.btnClearHistory.TabIndex = 1;
+            this.btnClearHistory.Text = "Clear History (no undo)";
+            this.btnClearHistory.UseVisualStyleBackColor = true;
+            this.btnClearHistory.Click += new System.EventHandler(this.btnClearHistory_Click);
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1084, 519);
+            this.ClientSize = new System.Drawing.Size(1084, 517);
             this.Controls.Add(this.scMain);
             this.Controls.Add(this.msMainMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -561,6 +614,8 @@ namespace M64MMOrkestrator
             this.scMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.scMain)).EndInit();
             this.scMain.ResumeLayout(false);
+            this.tbpUndoRedo.ResumeLayout(false);
+            this.gbUndoRedo.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -609,5 +664,9 @@ namespace M64MMOrkestrator
         private System.Windows.Forms.Label lbSpd;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button btnCollapseTl;
+        private System.Windows.Forms.TabPage tbpUndoRedo;
+        private System.Windows.Forms.GroupBox gbUndoRedo;
+        private System.Windows.Forms.ListBox lbUndoRedo;
+        private System.Windows.Forms.Button btnClearHistory;
     }
 }

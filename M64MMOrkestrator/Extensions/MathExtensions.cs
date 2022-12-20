@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Keyshift.Core.Classes.Rack.Types;
 
 namespace M64MMOrkestrator.Extensions
 {

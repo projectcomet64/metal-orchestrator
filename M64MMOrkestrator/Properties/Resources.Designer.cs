@@ -371,7 +371,7 @@ namespace M64MMOrkestrator.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a -beta2.
+        ///   Busca una cadena traducida similar a -release.
         /// </summary>
         internal static string postVersionDecorator {
             get {
